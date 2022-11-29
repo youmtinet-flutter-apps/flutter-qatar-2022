@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fifa_worldcup/competetions.dart';
+import 'package:fifa_worldcup/models/competetions.dart';
 import 'package:fifa_worldcup/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

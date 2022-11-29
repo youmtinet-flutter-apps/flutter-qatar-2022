@@ -34,20 +34,21 @@ dev_dependencies:
   flutter_native_splash: ^2.2.10+1
 
 
+# flutter pub run flutter_launcher_icons:main
 flutter_icons:
-  image_path: "assets/images/launcher.png" 
+  image_path: assets/qatar-word.png
   android: true
   ios: true
   remove_alpha_ios: true
   adaptive_icon_background: "#FFFFFFFF"
-  adaptive_icon_foreground: assets/images/launcher.png
+  adaptive_icon_foreground: assets/qatar-word.png
 
   flutter_lints: ^1.0.0
 
 # flutter pub run flutter_native_splash:create
-
 flutter_native_splash:
-  image: assets/images/trashbin.png
+  image: assets/logo.png
+  branding: assets/qatar-word.png
   color: "#FAFAFA"
   # image_dark: assets/splash-dark.png
   # color_dark: "#0A0A0A"
@@ -56,8 +57,9 @@ flutter_native_splash:
 
   android_12:
 
-    image: assets/images/trashbin.png
+    image: assets/logo.png
     color: "#FAFAFA"
+    branding: assets/qatar-word.png
 
     # color_dark: "#0A0A0A"
     # icon_background_color: "#111111"
@@ -68,4 +70,11 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+
+  fonts:
+    - family: Qatar2022
+      fonts:
+        - asset: assets/Qatar2022/Qatar2022Arabic-Bold.ttf
+        - asset: assets/Qatar2022/Qatar2022Arabic-Heavy.ttf
+        
   #

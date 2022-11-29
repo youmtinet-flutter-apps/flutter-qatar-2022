@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ymrabtiapps.fifa_worldcup">
    <application
-        android:label="fifa_worldcup"
+        android:label="QATAR 2022"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
