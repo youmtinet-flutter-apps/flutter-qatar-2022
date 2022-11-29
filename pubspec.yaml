@@ -1,0 +1,71 @@
+name: fifa_worldcup
+description: Fifa World cup competitions, matches and much more
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  console_tools: ^1.0.0
+  http: ^0.13.5
+  just_audio: ^0.9.30
+  
+  get: ^4.6.5
+  video_player: ^2.4.8
+  provider: ^6.0.4
+  shared_preferences: ^2.0.15
+  flutter_svg: ^1.1.6
+  path_provider: ^2.0.11
+  path: ^1.8.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.10.0
+  flutter_native_splash: ^2.2.10+1
+
+
+flutter_icons:
+  image_path: "assets/images/launcher.png" 
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFFFF"
+  adaptive_icon_foreground: assets/images/launcher.png
+
+  flutter_lints: ^1.0.0
+
+# flutter pub run flutter_native_splash:create
+
+flutter_native_splash:
+  image: assets/images/trashbin.png
+  color: "#FAFAFA"
+  # image_dark: assets/splash-dark.png
+  # color_dark: "#0A0A0A"
+  #background_image: "assets/background.png"
+  #background_image_dark: "assets/dark-background.png"
+
+  android_12:
+
+    image: assets/images/trashbin.png
+    color: "#FAFAFA"
+
+    # color_dark: "#0A0A0A"
+    # icon_background_color: "#111111"
+    # icon_background_color_dark: "#eeeeee"
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+  #
