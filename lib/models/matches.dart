@@ -2,14 +2,14 @@ class WorldcupMatches {
   final Filters filters;
   final ResultSet resultSet;
   final Competition competition;
-  final List<Matches> matches;
+  final List<Matche> matches;
   const WorldcupMatches({
     required this.filters,
     required this.resultSet,
     required this.competition,
     required this.matches,
   });
-  WorldcupMatches copyWith({Filters? filters, ResultSet? resultSet, Competition? competition, List<Matches>? matches}) {
+  WorldcupMatches copyWith({Filters? filters, ResultSet? resultSet, Competition? competition, List<Matche>? matches}) {
     return WorldcupMatches(
       filters: filters ?? this.filters,
       resultSet: resultSet ?? this.resultSet,
@@ -27,7 +27,7 @@ class WorldcupMatches {
         filters: json['filters'] == null ? Filters.fromJson({}) : Filters.fromJson(json['filters'] as Map<String, Object?>),
         resultSet: json['resultSet'] == null ? ResultSet.fromJson({}) : ResultSet.fromJson(json['resultSet'] as Map<String, Object?>),
         competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>),
-        matches: json['matches'] == null ? [] : (json['matches'] as List).map<Matches>((data) => Matches.fromJson(data as Map<String, Object?>)).toList());
+        matches: json['matches'] == null ? [] : (json['matches'] as List).map<Matche>((data) => Matche.fromJson(data as Map<String, Object?>)).toList());
   }
 
   @override
@@ -46,7 +46,7 @@ class WorldcupMatches {
   }
 }
 
-class Matches {
+class Matche {
   final Area area;
   final Competition competition;
   final Season season;
@@ -62,7 +62,7 @@ class Matches {
   final Score score;
   final Odds odds;
   final List<Referees> referees;
-  const Matches({
+  const Matche({
     required this.area,
     required this.competition,
     required this.season,
@@ -79,8 +79,8 @@ class Matches {
     required this.odds,
     required this.referees,
   });
-  Matches copyWith({Area? area, Competition? competition, Season? season, int? id, String? utcDate, String? status, int? matchday, String? stage, String? group, String? lastUpdated, HomeTeam? homeTeam, HomeTeam? awayTeam, Score? score, Odds? odds, List<Referees>? referees}) {
-    return Matches(
+  Matche copyWith({Area? area, Competition? competition, Season? season, int? id, String? utcDate, String? status, int? matchday, String? stage, String? group, String? lastUpdated, HomeTeam? homeTeam, HomeTeam? awayTeam, Score? score, Odds? odds, List<Referees>? referees}) {
+    return Matche(
         area: area ?? this.area,
         competition: competition ?? this.competition,
         season: season ?? this.season,
@@ -118,8 +118,8 @@ class Matches {
     };
   }
 
-  static Matches fromJson(Map<String, Object?> json) {
-    return Matches(
+  static Matche fromJson(Map<String, Object?> json) {
+    return Matche(
         area: json['area'] == null ? Area.fromJson({}) : Area.fromJson(json['area'] as Map<String, Object?>),
         competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>),
         season: json['season'] == null ? Season.fromJson({}) : Season.fromJson(json['season'] as Map<String, Object?>),
@@ -144,7 +144,7 @@ class Matches {
 
   @override
   bool operator ==(Object other) {
-    return other is Matches &&
+    return other is Matche &&
         other.runtimeType == runtimeType &&
         other.area == area &&
         other.competition == competition &&

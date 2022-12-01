@@ -1,26 +1,26 @@
 import 'matches.dart';
 
-class WorldcupCompetitions {
+class WorldcupStandings {
   final Filters filters;
   final Area area;
   final Competition competition;
   final Season season;
   final List<Standings> standings;
-  const WorldcupCompetitions({
+  const WorldcupStandings({
     required this.filters,
     required this.area,
     required this.competition,
     required this.season,
     required this.standings,
   });
-  WorldcupCompetitions copyWith({
+  WorldcupStandings copyWith({
     Filters? filters,
     Area? area,
     Competition? competition,
     Season? season,
     List<Standings>? standings,
   }) {
-    return WorldcupCompetitions(
+    return WorldcupStandings(
       filters: filters ?? this.filters,
       area: area ?? this.area,
       competition: competition ?? this.competition,
@@ -33,8 +33,8 @@ class WorldcupCompetitions {
     return {'filters': filters.toJson(), 'area': area.toJson(), 'competition': competition.toJson(), 'season': season.toJson(), 'standings': standings.map<Map<String, dynamic>>((data) => data.toJson()).toList()};
   }
 
-  static WorldcupCompetitions fromJson(Map<String, Object?> json) {
-    return WorldcupCompetitions(
+  static WorldcupStandings fromJson(Map<String, Object?> json) {
+    return WorldcupStandings(
       filters: json['filters'] == null ? Filters.fromJson({}) : Filters.fromJson(json['filters'] as Map<String, Object?>),
       area: json['area'] == null ? Area.fromJson({}) : Area.fromJson(json['area'] as Map<String, Object?>),
       competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>),
@@ -50,7 +50,7 @@ class WorldcupCompetitions {
 
   @override
   bool operator ==(Object other) {
-    return other is WorldcupCompetitions && other.runtimeType == runtimeType && other.filters == filters && other.area == area && other.competition == competition && other.season == season && other.standings == standings;
+    return other is WorldcupStandings && other.runtimeType == runtimeType && other.filters == filters && other.area == area && other.competition == competition && other.season == season && other.standings == standings;
   }
 
   @override

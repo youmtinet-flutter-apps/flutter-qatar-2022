@@ -1,17 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:console_tools/console_tools.dart';
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:video_player/video_player.dart';
 
 void main() async {
-  WorldcupCompetitions data = await fifaWCStandings() ?? WorldcupCompetitions.fromJson({});
+  WorldcupStandings standings = await fifaWCStandings() ?? WorldcupStandings.fromJson({});
+  WorldcupMatches matches = await fifaWCMatches() ?? WorldcupMatches.fromJson({});
   runApp(
     GetMaterialApp(
       title: 'FIFA WORLD CUP QATAR 2022',
@@ -20,33 +18,24 @@ void main() async {
         fontFamily: 'Qatar2022',
         primarySwatch: primarycolor,
       ),
-      home: SplashPage(seek: true, data: data),
+      home: SplashPage(
+        seek: true,
+        standings: standings,
+        matches: matches,
+      ),
     ),
   );
 }
 
-Future<WorldcupCompetitions?> fifaWCStandings() async {
-  var headers = {'X-Auth-Token': token};
-  var request = Request('GET', Uri.parse('https://api.football-data.org/v4/competitions/2000/standings'));
-
-  request.headers.addAll(headers);
-
-  StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    var text = await response.stream.bytesToString();
-    var fromJson = WorldcupCompetitions.fromJson(json.decode(text));
-    return fromJson;
-  } else {
-    Console.log(response.reasonPhrase);
-  }
-  return null;
-}
-
 class QatarWorldCup extends StatefulWidget {
-  const QatarWorldCup({super.key, required this.title, required this.data});
-
-  final WorldcupCompetitions data;
+  const QatarWorldCup({
+    super.key,
+    required this.title,
+    required this.standings,
+    required this.matches,
+  });
+  final WorldcupMatches matches;
+  final WorldcupStandings standings;
   final String title;
 
   @override
@@ -89,6 +78,8 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
 
   @override
   Widget build(BuildContext context) {
+    var widgets2 = widgets(widget.matches.matches);
+    Console.log(widgets2.map((e) => '${e.stage} ${e.matches.length} || '));
     return Stack(
       children: [
         VideoPlayer(videoPlayerController),
@@ -135,11 +126,14 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                   ],
                 ),
                 SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar-word.png')),
-                ...widget.data.standings
-                    .map((e) => TableStanding(
-                          standing: e,
-                        ))
-                    .toList(),
+                // ...widgets(widget.matches.matches).map((e) => e.view()),
+                /* ListView.builder(
+                  itemCount: widgets2.length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) => _buildList(widgets2[index]),
+                ), */
+                ...widgets2.map((e) => _buildList(e)),
+                ...widget.standings.standings.map((e) => TableStanding(standing: e)),
               ],
             ),
           ),
@@ -149,47 +143,88 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
   }
 }
 
-class Customshape extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    double height = size.height;
-    double width = size.width;
+Widget _buildList(StageWithMatches list) {
+  return ExpansionTile(
+    // leading: list.icon != null ? Icon(list.icon) : null,
+    title: Text(
+      list.stage,
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    ),
+    children: (list.groupMatches.isEmpty
+            ? list.matches.map(
+                (e) => MatchView(match: e),
+              )
+            : list.groupMatches.map(
+                (e) => ExpansionTile(
+                  title: Text(e.group),
+                  children: e.matches.map((e) => MatchView(match: e)).toList(),
+                ),
+              ))
+        .toList(),
+  );
+}
 
-    var path = Path();
-    path.lineTo(0, 0);
-    path.lineTo(0, height - 50);
-    path.lineTo(width, height);
-    path.lineTo(width, 0);
-    path.close();
-    return path;
-  }
+bool ine(Matche e) => e.homeTeam.crest.isNotEmpty;
 
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
+class GroupMatches {
+  String group;
+  List<Matche> matches;
+  GroupMatches({required this.group, required this.matches});
+}
+
+class StageWithMatches {
+  String stage;
+  List<Matche> matches;
+  List<GroupMatches> groupMatches = [];
+  StageWithMatches({required this.stage, required this.matches, this.groupMatches = const []});
+  Widget view() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            stage,
+            style: const TextStyle(
+              fontSize: 36,
+              color: Color(0xFFA9A9A9),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ...matches.where(ine).map((e) => MatchView(match: e))
+      ],
+    );
   }
 }
-/* body: VimeoVideoPlayer(
-vimeoPlayerModel: VimeoPlayerModel(
-url: 'https://vimeo.com/70591644',
 
-),
-), */
-/* body: ClipRect(
-child: AspectRatio(
-aspectRatio: videoPlayerController.value.aspectRatio,
-child: VideoPlayer(videoPlayerController),
-),
-), */
-/* FittedBox(
-fit: BoxFit.fitWidth,
-child: SizedBox(
-width: Get.width,
-height: Get.height,
-child: AnimatedOpacity(
-opacity: _visible ? 1.0 : 0.0,
-duration: const Duration(milliseconds: 1000),
-child: VideoPlayer(_controller),
-),
-),
-), */
+List<StageWithMatches> widgets(List<Matche> matches) {
+  var vari = matches.fold<List<StageWithMatches>>(
+    [],
+    (previousValue, element) {
+      var where = previousValue.where((e) => e.stage == element.stage);
+      if (where.isEmpty) {
+        previousValue.add(StageWithMatches(stage: element.stage, matches: [element]));
+      } else {
+        where.first.matches.add(element);
+      }
+      return previousValue;
+    },
+  );
+  var groupStage = vari.where((e) => e.stage == 'GROUP_STAGE');
+  var groupStageNotEmpty = groupStage.isNotEmpty;
+  if (groupStageNotEmpty) {
+    var expansionGroups = groupStage.first.matches.fold<List<GroupMatches>>([], (previousValue, element) {
+      var where = previousValue.where((e) => e.group == element.group);
+      if (where.isEmpty) {
+        previousValue.add(GroupMatches(group: element.group, matches: [element]));
+      } else {
+        where.first.matches.add(element);
+      }
+      return previousValue;
+    });
+    Console.log(expansionGroups.map((e) => '${e.group} ${e.matches.length} || '));
+    groupStage.first.groupMatches = expansionGroups;
+  }
+  return vari;
+}

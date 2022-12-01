@@ -1,2 +1,2 @@
-export 'competetions.dart';
 export 'matches.dart';
+export 'standings.dart';

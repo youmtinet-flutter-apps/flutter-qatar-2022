@@ -1,16 +1,21 @@
 import 'dart:async';
 
-import 'package:fifa_worldcup/models/competetions.dart';
-import 'package:fifa_worldcup/main.dart';
+import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key? key, required this.seek, required this.data}) : super(key: key);
+  const SplashPage({
+    Key? key,
+    required this.seek,
+    required this.standings,
+    required this.matches,
+  }) : super(key: key);
   final bool seek;
-  final WorldcupCompetitions data;
+  final WorldcupStandings standings;
+  final WorldcupMatches matches;
   @override
   State<StatefulWidget> createState() => _SplashPageState();
 }
@@ -42,7 +47,8 @@ class _SplashPageState extends State<SplashPage> {
         MaterialPageRoute(
           builder: (context) => QatarWorldCup(
             title: 'FIFA WORLD CUP QATAR 2022',
-            data: widget.data,
+            standings: widget.standings,
+            matches: widget.matches,
           ),
         ),
         (e) => false,
