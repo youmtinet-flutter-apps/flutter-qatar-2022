@@ -79,7 +79,7 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
   @override
   Widget build(BuildContext context) {
     var widgets2 = widgets(widget.matches.matches);
-    Console.log(widgets2.map((e) => '${e.stage} ${e.matches.length} || '));
+    // Console.log(widgets2.map((e) => '${e.stage} ${e.matches.length} || '));
     return Stack(
       children: [
         VideoPlayer(videoPlayerController),
@@ -89,9 +89,11 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
             flexibleSpace: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/pattern.png'),
+                  image: AssetImage(
+                    'assets/pattern.png',
+                  ),
                   fit: BoxFit.cover,
-                  repeat: ImageRepeat.repeat,
+                  repeat: ImageRepeat.repeatX,
                 ),
               ),
             ),
@@ -111,7 +113,13 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                         color: const Color(primarycolorPrimaryValue),
                         child: Stack(
                           children: [
-                            Align(alignment: Alignment.center, child: Image.asset('assets/pattern.png')),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Image.asset(
+                                'assets/pattern.png',
+                                repeat: ImageRepeat.repeat,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -223,7 +231,7 @@ List<StageWithMatches> widgets(List<Matche> matches) {
       }
       return previousValue;
     });
-    Console.log(expansionGroups.map((e) => '${e.group} ${e.matches.length} || '));
+    // Console.log(expansionGroups.map((e) => '${e.group} ${e.matches.length} || '));
     groupStage.first.groupMatches = expansionGroups;
   }
   return vari;

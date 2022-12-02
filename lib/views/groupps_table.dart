@@ -1,7 +1,9 @@
 import 'package:fifa_worldcup/lib.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart';
 
 import 'package:path/path.dart';
 
@@ -62,6 +64,7 @@ class TableStanding extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: standing.table.map(
                   (e) {
+                    var index = standing.table.indexOf(e);
                     return Container(
                       width: Get.width,
                       alignment: Alignment.center,
@@ -70,16 +73,31 @@ class TableStanding extends StatelessWidget {
                         child: Row(
                           children: [
                             Expanded(
-                                flex: 2,
-                                child: Row(
-                                  children: [
-                                    TeamAvatar(team: e.team),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(e.team.tla, textAlign: TextAlign.center),
-                                    ),
-                                  ],
-                                )),
+                              flex: 2,
+                              child: Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      TeamAvatar(team: e.team),
+                                      if (index < 2)
+                                        const Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Icon(
+                                            Icons.verified,
+                                            color: primarycolor,
+                                            size: 15,
+                                            shadows: [Shadow(blurRadius: 5, color: Colors.white)],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(e.team.tla, textAlign: TextAlign.center),
+                                  ),
+                                ],
+                              ),
+                            ),
                             Expanded(flex: 1, child: Text('${e.playedGames}', textAlign: TextAlign.center)),
                             Expanded(flex: 1, child: Text('${e.won}', textAlign: TextAlign.center)),
                             Expanded(flex: 1, child: Text('${e.lost}', textAlign: TextAlign.center)),
@@ -120,13 +138,21 @@ class TeamAvatar extends StatelessWidget {
                 Icons.sports_soccer_sharp,
                 size: size - 8,
                 color: Colors.white,
+                shadows: [Shadow(blurRadius: 5, color: Colors.white)],
               )
             : extension(team.crest) == '.svg'
-                ? SvgPicture.network(
-                    team.crest,
-                    width: size,
-                    height: size,
-                    fit: BoxFit.cover,
+                ? FutureBuilder(
+                    future: svgNetwork(team.crest),
+                    builder: (context, snapshot) {
+                      return snapshot.hasData
+                          ? SvgPicture.string(
+                              snapshot.data!,
+                              width: size,
+                              height: size,
+                              fit: BoxFit.cover,
+                            )
+                          : const Center(child: CupertinoActivityIndicator());
+                    },
                   )
                 : Image.network(
                     team.crest,
@@ -136,5 +162,20 @@ class TeamAvatar extends StatelessWidget {
                   ),
       ),
     );
+  }
+}
+
+Future<String?> svgNetwork(String url) async {
+  var request = Request('GET', Uri.parse(url));
+
+  StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var svgtext = await response.stream.bytesToString();
+    var regExp1 = RegExp(r"<use (.+)\/>");
+    var regExp2 = RegExp(r'xlink:href="#[a-zA-Z]{1,}"');
+    return svgtext.replaceAll(regExp1, '').replaceAll(regExp2, '');
+  } else {
+    return null;
   }
 }
