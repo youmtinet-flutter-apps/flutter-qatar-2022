@@ -1,16 +1,18 @@
-# fifa_worldcup
+# FIFA WORLD CUP
+## _~*QATAR 2022*~_
 
-Fifa World cup competitions, matches and much more
+API USED   ```https://www.football-data.org/```
+## Create an account and get your api key
+Then 
+```
+Create a file ```credentials.dart``` in the lib directory
+with the content 
+const String token = your_token;
+```
+## License
 
-## Getting Started
+MIT
 
-This project is a starting point for a Flutter application.
+**Free Software, Hell Yeah!**
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

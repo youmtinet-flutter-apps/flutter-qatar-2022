@@ -1,4 +1,5 @@
-import 'matches.dart';
+import 'package:fifa_worldcup/lib.dart';
+import 'package:flutter/material.dart';
 
 class WorldcupStandings {
   final Filters filters;
@@ -71,6 +72,10 @@ class Standings {
 
   Map<String, Object?> toJson() {
     return {'stage': stage, 'type': type, 'group': group, 'table': table.map<Map<String, dynamic>>((data) => data.toJson()).toList()};
+  }
+
+  Widget toView() {
+    return TableStanding(standing: this);
   }
 
   static Standings fromJson(Map<String, Object?> json) {

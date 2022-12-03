@@ -1,3 +1,6 @@
+import 'package:fifa_worldcup/lib.dart';
+import 'package:flutter/material.dart';
+
 class WorldcupMatches {
   final Filters filters;
   final ResultSet resultSet;
@@ -140,6 +143,10 @@ class Matche {
   @override
   String toString() {
     return 'Matches(area:${area.toString()},competition:${competition.toString()},season:${season.toString()},id:$id,utcDate:$utcDate,status:$status,matchday:$matchday,stage:$stage,group:$group,lastUpdated:$lastUpdated,homeTeam:${homeTeam.toString()},awayTeam:${awayTeam.toString()},score:${score.toString()},odds:${odds.toString()},referees:${referees.toString()})';
+  }
+
+  Widget toView() {
+    return MatchView(match: this);
   }
 
   @override

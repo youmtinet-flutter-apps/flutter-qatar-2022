@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:console_tools/console_tools.dart';
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,8 +42,12 @@ class QatarWorldCup extends StatefulWidget {
 }
 
 class _QatarWorldCupState extends State<QatarWorldCup> {
+  late AudioPlayer player;
+  late VideoPlayerController videoPlayerController;
+
   @override
   void initState() {
+    player = AudioPlayer();
     unawaited(startAudio());
     unawaited(SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -52,14 +55,10 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
 
     videoPlayerController = VideoPlayerController.asset("assets/videosplash.mp4");
     /* videoPlayerController.initialize().then((_) => videoPlayerController.play()); */
-
     super.initState();
   }
 
-/* final duration =  */
-  late VideoPlayerController videoPlayerController;
   Future<void> startAudio() async {
-    final player = AudioPlayer();
     await player.setAsset('assets/yallayalla.mp3');
     await player.setVolume(0.5);
     await player.setLoopMode(LoopMode.all);
@@ -70,8 +69,13 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
     // await player.stop();
   }
 
+  Future<void> pauseAudio() async {
+    await player.pause();
+  }
+
   @override
   void dispose() {
+    unawaited(pauseAudio());
     videoPlayerController.dispose();
     super.dispose();
   }
@@ -140,8 +144,33 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) => _buildList(widgets2[index]),
                 ), */
-                ...widgets2.map((e) => _buildList(e)),
-                ...widget.standings.standings.map((e) => TableStanding(standing: e)),
+                ...widgets2.map(
+                  (e) => ExpansionTile(
+                    // leading: list.icon != null ? Icon(list.icon) : null,
+                    title: Text(
+                      e.stage,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    children: (e.groupMatches.isEmpty
+                            ? e.matches.map(
+                                (e) => e.toView(),
+                              )
+                            : e.groupMatches.map(
+                                (e) {
+                                  var firstStandl = widget.standings.standings.firstWhereOrNull((element) => element.group == e.group);
+                                  return ExpansionTile(
+                                    title: Text(e.group),
+                                    children: [
+                                      ...e.matches.map((e) => e.toView()).toList(),
+                                      if (firstStandl != null) firstStandl.toView(),
+                                    ],
+                                  );
+                                },
+                              ))
+                        .toList(),
+                  ),
+                ),
+                // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
               ],
             ),
           ),
@@ -149,27 +178,6 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
       ],
     );
   }
-}
-
-Widget _buildList(StageWithMatches list) {
-  return ExpansionTile(
-    // leading: list.icon != null ? Icon(list.icon) : null,
-    title: Text(
-      list.stage,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-    ),
-    children: (list.groupMatches.isEmpty
-            ? list.matches.map(
-                (e) => MatchView(match: e),
-              )
-            : list.groupMatches.map(
-                (e) => ExpansionTile(
-                  title: Text(e.group),
-                  children: e.matches.map((e) => MatchView(match: e)).toList(),
-                ),
-              ))
-        .toList(),
-  );
 }
 
 bool ine(Matche e) => e.homeTeam.crest.isNotEmpty;
@@ -200,7 +208,7 @@ class StageWithMatches {
             ),
           ),
         ),
-        ...matches.where(ine).map((e) => MatchView(match: e))
+        ...matches.where(ine).map((e) => e.toView())
       ],
     );
   }
@@ -210,11 +218,11 @@ List<StageWithMatches> widgets(List<Matche> matches) {
   var vari = matches.fold<List<StageWithMatches>>(
     [],
     (previousValue, element) {
-      var where = previousValue.where((e) => e.stage == element.stage);
-      if (where.isEmpty) {
+      var wheras = previousValue.where((e) => e.stage == element.stage);
+      if (wheras.isEmpty) {
         previousValue.add(StageWithMatches(stage: element.stage, matches: [element]));
       } else {
-        where.first.matches.add(element);
+        wheras.first.matches.add(element);
       }
       return previousValue;
     },
@@ -223,11 +231,11 @@ List<StageWithMatches> widgets(List<Matche> matches) {
   var groupStageNotEmpty = groupStage.isNotEmpty;
   if (groupStageNotEmpty) {
     var expansionGroups = groupStage.first.matches.fold<List<GroupMatches>>([], (previousValue, element) {
-      var where = previousValue.where((e) => e.group == element.group);
-      if (where.isEmpty) {
+      var wheras = previousValue.where((e) => e.group == element.group);
+      if (wheras.isEmpty) {
         previousValue.add(GroupMatches(group: element.group, matches: [element]));
       } else {
-        where.first.matches.add(element);
+        wheras.first.matches.add(element);
       }
       return previousValue;
     });
