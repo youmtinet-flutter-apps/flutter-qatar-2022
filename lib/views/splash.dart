@@ -42,11 +42,11 @@ class _SplashPageState extends State<SplashPage> {
       });
     });
 
-    Future.delayed(Duration(seconds: widget.seek ? 10 : 27), () {
+    Future.delayed(Duration(seconds: widget.seek ? 8 : 27), () {
       Get.offUntil(
         MaterialPageRoute(
           builder: (context) => QatarWorldCup(
-            title: 'FIFA WORLD CUP QATAR 2022',
+            title: 'كأس العالم فيفا قطر 2022',
             standings: widget.standings,
             matches: widget.matches,
           ),

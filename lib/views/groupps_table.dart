@@ -28,28 +28,34 @@ class TableStanding extends StatelessWidget {
             ),
             width: Get.width,
             alignment: Alignment.center,
-            child: Padding(
+            /* child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 standing.group,
                 style: textStyle,
               ),
-            ),
+            ), */
           ),
           Container(
-            decoration: BoxDecoration(color: primarycolor.shade700),
             width: Get.width,
+            decoration: BoxDecoration(
+              color: primarycolor.shade700,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Expanded(flex: 2, child: Text('Team', style: textStyle, textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text('P', style: textStyle, textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text('W', style: textStyle, textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text('L', style: textStyle, textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text('D', style: textStyle, textAlign: TextAlign.center)),
-                  Expanded(flex: 1, child: Text('Points', style: textStyle, textAlign: TextAlign.center)),
+                  Expanded(flex: 2, child: Text('الفريق', style: textStyle, textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text('ل', style: textStyle, textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text('ر', style: textStyle, textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text('خ', style: textStyle, textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text('ت', style: textStyle, textAlign: TextAlign.center)),
+                  Expanded(flex: 1, child: Text('نقاط', style: textStyle, textAlign: TextAlign.center)),
                 ],
               ),
             ),

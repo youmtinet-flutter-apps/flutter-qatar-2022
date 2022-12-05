@@ -11,7 +11,8 @@ void main() async {
   WorldcupMatches matches = await fifaWCMatches() ?? WorldcupMatches.fromJson({});
   runApp(
     GetMaterialApp(
-      title: 'FIFA WORLD CUP QATAR 2022',
+      title: 'كأس العالم فيفا قطر 2022',
+      locale: const Locale('ar'),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Qatar2022',
@@ -84,26 +85,27 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
   Widget build(BuildContext context) {
     var widgets2 = widgets(widget.matches.matches);
     // Console.log(widgets2.map((e) => '${e.stage} ${e.matches.length} || '));
-    return Stack(
-      children: [
-        VideoPlayer(videoPlayerController),
-        Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/pattern.png',
-                  ),
-                  fit: BoxFit.cover,
-                  repeat: ImageRepeat.repeatX,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/pattern.png',
               ),
+              fit: BoxFit.cover,
+              repeat: ImageRepeat.repeat,
             ),
-            elevation: 0,
           ),
-          body: SingleChildScrollView(
+        ),
+        elevation: 0,
+      ),
+      body: Stack(
+        children: [
+          // VideoPlayer(videoPlayerController),
+          SingleChildScrollView(
+            // physics: const BouncingScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -116,28 +118,31 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                         width: MediaQuery.of(context).size.width,
                         color: const Color(primarycolorPrimaryValue),
                         child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Image.asset(
-                                'assets/pattern.png',
-                                repeat: ImageRepeat.repeat,
-                              ),
-                            ),
-                          ],
+                          children: const [BackgroundPattern()],
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: Get.width * .3,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: Get.width * .3,
                         child: Image.asset('assets/logo.png'),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar-word.png')),
+                // SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar-word.png')),
+                SizedBox(
+                    width: Get.width * .75,
+                    child: const Text(
+                      'قطر 2022',
+                      style: TextStyle(
+                        color: primarycolor,
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
                 // ...widgets(widget.matches.matches).map((e) => e.view()),
                 /* ListView.builder(
                   itemCount: widgets2.length,
@@ -148,7 +153,7 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                   (e) => ExpansionTile(
                     // leading: list.icon != null ? Icon(list.icon) : null,
                     title: Text(
-                      e.stage,
+                      stageName(e.stage),
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     children: (e.groupMatches.isEmpty
@@ -158,12 +163,15 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                             : e.groupMatches.map(
                                 (e) {
                                   var firstStandl = widget.standings.standings.firstWhereOrNull((element) => element.group == e.group);
-                                  return ExpansionTile(
-                                    title: Text(e.group),
-                                    children: [
-                                      ...e.matches.map((e) => e.toView()).toList(),
-                                      if (firstStandl != null) firstStandl.toView(),
-                                    ],
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 18.0, right: 10),
+                                    child: ExpansionTile(
+                                      title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
+                                      children: [
+                                        ...e.matches.map((e) => e.toView()).toList(),
+                                        if (firstStandl != null) firstStandl.toView(),
+                                      ],
+                                    ),
                                   );
                                 },
                               ))
@@ -174,9 +182,55 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
+  }
+}
+
+class BackgroundPattern extends StatelessWidget {
+  const BackgroundPattern({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: Get.width,
+      height: Get.height,
+      child: const Image(
+        image: AssetImage(
+          'assets/pattern.png',
+        ),
+        fit: BoxFit.cover,
+        repeat: ImageRepeat.repeat,
+      ),
+    );
+  }
+}
+
+String stageName(title) {
+  switch (title) {
+    case 'GROUP_STAGE':
+      return "دور المجموعات";
+
+    case 'LAST_16':
+      return "دور الـ16";
+
+    case 'QUARTER_FINALS':
+      return "ربع النهائي";
+
+    case 'SEMI_FINALS':
+      return "نصف النهائي";
+
+    case 'THIRD_PLACE':
+      return "المركز الثالث";
+
+    case 'FINAL':
+      return "النهائي";
+
+    default:
+      return "النهائي";
   }
 }
 
@@ -240,6 +294,7 @@ List<StageWithMatches> widgets(List<Matche> matches) {
       return previousValue;
     });
     // Console.log(expansionGroups.map((e) => '${e.group} ${e.matches.length} || '));
+    expansionGroups.sort((a, b) => Comparable.compare(a.group, b.group));
     groupStage.first.groupMatches = expansionGroups;
   }
   return vari;

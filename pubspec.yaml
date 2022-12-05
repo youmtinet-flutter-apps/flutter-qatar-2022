@@ -37,12 +37,12 @@ dev_dependencies:
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:
-  image_path: assets/qatar-word.png
+  image_path: assets/android12.png
   android: true
   ios: true
   remove_alpha_ios: true
   adaptive_icon_background: "#FFFFFFFF"
-  adaptive_icon_foreground: assets/qatar-word.png
+  adaptive_icon_foreground: assets/android12.png
 
   flutter_lints: ^1.0.0
 
@@ -51,18 +51,17 @@ flutter_native_splash:
   image: assets/logo.png
   branding: assets/qatar-word.png
   color: "#FAFAFA"
+  color_dark: "#0A0A0A"
   # image_dark: assets/splash-dark.png
-  # color_dark: "#0A0A0A"
   #background_image: "assets/background.png"
   #background_image_dark: "assets/dark-background.png"
 
   android_12:
-
-    image: assets/logo.png
-    color: "#FAFAFA"
+    image: assets/android12hq.png
     branding: assets/qatar-word.png
+    color: "#FAFAFA"
+    color_dark: "#0A0A0A"
 
-    # color_dark: "#0A0A0A"
     # icon_background_color: "#111111"
     # icon_background_color_dark: "#eeeeee"
 

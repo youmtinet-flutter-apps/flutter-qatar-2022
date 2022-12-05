@@ -31,8 +31,8 @@ class _MatchViewState extends State<MatchView> {
                   decoration: const BoxDecoration(
                     color: primarycolor,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(36),
-                      bottomLeft: Radius.circular(36),
+                      topRight: Radius.circular(36),
+                      bottomRight: Radius.circular(36),
                     ),
                   ),
                   alignment: Alignment.center,
@@ -43,15 +43,15 @@ class _MatchViewState extends State<MatchView> {
                       children: [
                         TeamAvatar(
                           team: Team.fromJson({}).copyWith(
-                            crest: widget.match.homeTeam.crest,
-                            id: widget.match.homeTeam.id,
-                            name: widget.match.homeTeam.name,
-                            shortName: widget.match.homeTeam.name,
-                            tla: homeTeamTla,
+                            crest: widget.match.awayTeam.crest,
+                            id: widget.match.awayTeam.id,
+                            name: widget.match.awayTeam.name,
+                            shortName: widget.match.awayTeam.name,
+                            tla: awayTeamTla,
                           ),
                         ),
                         Text(
-                          homeTeamTla.isEmpty ? 'TBD' : homeTeamTla,
+                          awayTeamTla.isEmpty ? 'TBD' : awayTeamTla,
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],
@@ -83,7 +83,7 @@ class _MatchViewState extends State<MatchView> {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(widget.match.status),
+                            Text(statusMatch(widget.match.status)),
                             Text('${DateFormat.Hm().format(matchTime)} GMT'),
                             Text(DateFormat.MEd().format(matchTime)),
                           ],
@@ -108,8 +108,8 @@ class _MatchViewState extends State<MatchView> {
                   decoration: const BoxDecoration(
                     color: primarycolor,
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(36),
-                      bottomRight: Radius.circular(36),
+                      topLeft: Radius.circular(36),
+                      bottomLeft: Radius.circular(36),
                     ),
                   ),
                   alignment: Alignment.center,
@@ -120,15 +120,15 @@ class _MatchViewState extends State<MatchView> {
                       children: [
                         TeamAvatar(
                           team: Team.fromJson({}).copyWith(
-                            crest: widget.match.awayTeam.crest,
-                            id: widget.match.awayTeam.id,
-                            name: widget.match.awayTeam.name,
-                            shortName: widget.match.awayTeam.name,
-                            tla: awayTeamTla,
+                            crest: widget.match.homeTeam.crest,
+                            id: widget.match.homeTeam.id,
+                            name: widget.match.homeTeam.name,
+                            shortName: widget.match.homeTeam.name,
+                            tla: homeTeamTla,
                           ),
                         ),
                         Text(
-                          awayTeamTla.isEmpty ? 'TBD' : awayTeamTla,
+                          homeTeamTla.isEmpty ? 'TBD' : homeTeamTla,
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],
@@ -141,5 +141,21 @@ class _MatchViewState extends State<MatchView> {
         ),
       ),
     );
+  }
+}
+
+String statusMatch(status) {
+  switch (status) {
+    case 'FINISHED':
+      return "انتهت";
+
+    case 'TIMED':
+      return "مبرمجة";
+
+    case 'IN_PLAY':
+      return "تلعب الآن";
+
+    default:
+      return '';
   }
 }
