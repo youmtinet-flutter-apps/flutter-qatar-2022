@@ -1,5 +1,5 @@
 # FIFA WORLD CUP
-## _~*QATAR 2022*~_
+## _*QATAR 2022*_
 
 API USED   ```https://www.football-data.org/```
 ## Create an account and get your api key

@@ -20,6 +20,70 @@ class Customshape extends CustomClipper<Path> {
     return true;
   }
 }
+
+class FIFAPainter extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+
+    // Path number 1
+    path = Path();
+    path.lineTo(0, 0);
+    path.cubicTo(size.width * 0.1, 0, size.width * 0.19, 0, size.width * 0.28, 0);
+    path.cubicTo(size.width * 0.27, size.height * 0.08, size.width * 0.26, size.height * 0.15, size.width / 4, size.height * 0.22);
+    path.cubicTo(size.width / 5, size.height * 0.22, size.width * 0.15, size.height * 0.22, size.width * 0.1, size.height * 0.22);
+    path.cubicTo(size.width * 0.1, size.height * 0.29, size.width * 0.1, size.height * 0.35, size.width * 0.1, size.height * 0.42);
+    path.cubicTo(size.width * 0.14, size.height * 0.42, size.width * 0.17, size.height * 0.42, size.width / 5, size.height * 0.42);
+    path.cubicTo(size.width * 0.19, size.height / 2, size.width * 0.19, size.height * 0.57, size.width * 0.18, size.height * 0.64);
+    path.cubicTo(size.width * 0.15, size.height * 0.64, size.width * 0.13, size.height * 0.64, size.width * 0.1, size.height * 0.64);
+    path.cubicTo(size.width * 0.1, size.height * 0.76, size.width * 0.1, size.height * 0.88, size.width * 0.1, size.height);
+    path.cubicTo(size.width * 0.07, size.height, size.width * 0.04, size.height, 0, size.height);
+    path.cubicTo(0, size.height * 0.67, 0, size.height * 0.34, 0, 0);
+    path.cubicTo(0, 0, 0, 0, 0, 0);
+    path.lineTo(size.width * 0.28, 0);
+    path.cubicTo(size.width * 0.34, 0, size.width * 0.4, 0, size.width * 0.46, 0);
+    path.cubicTo(size.width * 0.45, 0, size.width * 0.45, 0, size.width * 0.44, size.height * 0.01);
+    path.cubicTo(size.width * 0.38, size.height * 0.07, size.width * 0.38, size.height * 0.65, size.width * 0.39, size.height);
+    path.cubicTo(size.width * 0.35, size.height, size.width * 0.32, size.height, size.width * 0.28, size.height);
+    path.cubicTo(size.width * 0.28, size.height * 0.67, size.width * 0.28, size.height * 0.34, size.width * 0.28, 0);
+    path.cubicTo(size.width * 0.28, 0, size.width * 0.28, 0, size.width * 0.28, 0);
+    path.lineTo(size.width * 0.46, 0);
+    path.cubicTo(size.width * 0.56, 0, size.width * 0.67, 0, size.width * 0.78, 0);
+    path.cubicTo(size.width * 0.76, size.height * 0.07, size.width * 0.74, size.height * 0.15, size.width * 0.72, size.height * 0.22);
+    path.cubicTo(size.width * 0.67, size.height * 0.22, size.width * 0.61, size.height * 0.22, size.width * 0.56, size.height * 0.22);
+    path.cubicTo(size.width * 0.56, size.height * 0.29, size.width * 0.56, size.height * 0.35, size.width * 0.56, size.height * 0.42);
+    path.cubicTo(size.width * 0.59, size.height * 0.42, size.width * 0.63, size.height * 0.42, size.width * 0.66, size.height * 0.42);
+    path.cubicTo(size.width * 0.65, size.height * 0.47, size.width * 0.65, size.height * 0.53, size.width * 0.64, size.height * 0.58);
+    path.cubicTo(size.width * 0.64, size.height * 0.6, size.width * 0.64, size.height * 0.63, size.width * 0.63, size.height * 0.64);
+    path.cubicTo(size.width * 0.61, size.height * 0.64, size.width * 0.58, size.height * 0.64, size.width * 0.56, size.height * 0.64);
+    path.cubicTo(size.width * 0.56, size.height * 0.76, size.width * 0.56, size.height * 0.88, size.width * 0.56, size.height);
+    path.cubicTo(size.width * 0.53, size.height, size.width * 0.49, size.height, size.width * 0.46, size.height);
+    path.cubicTo(size.width * 0.46, size.height * 0.67, size.width * 0.46, size.height * 0.34, size.width * 0.46, 0);
+    path.cubicTo(size.width * 0.46, 0, size.width * 0.46, 0, size.width * 0.46, 0);
+    path.lineTo(size.width * 0.78, 0);
+    path.cubicTo(size.width * 0.81, 0, size.width * 0.85, 0, size.width * 0.88, 0);
+    path.cubicTo(size.width * 0.92, size.height * 0.34, size.width * 0.96, size.height * 0.67, size.width, size.height);
+    path.cubicTo(size.width * 0.97, size.height, size.width * 0.93, size.height, size.width * 0.9, size.height);
+    path.cubicTo(size.width * 0.89, size.height * 0.96, size.width * 0.89, size.height * 0.91, size.width * 0.89, size.height * 0.87);
+    path.cubicTo(size.width * 0.85, size.height * 0.87, size.width * 0.81, size.height * 0.87, size.width * 0.77, size.height * 0.87);
+    path.cubicTo(size.width * 0.77, size.height * 0.91, size.width * 0.76, size.height * 0.96, size.width * 0.76, size.height);
+    path.cubicTo(size.width * 0.72, size.height, size.width * 0.69, size.height, size.width * 0.66, size.height);
+    path.cubicTo(size.width * 0.7, size.height * 0.67, size.width * 0.74, size.height * 0.34, size.width * 0.78, 0);
+    path.cubicTo(size.width * 0.78, 0, size.width * 0.78, 0, size.width * 0.78, 0);
+    path.lineTo(size.width * 0.83, size.height * 0.26);
+    path.cubicTo(size.width * 0.81, size.height * 0.4, size.width * 0.8, size.height * 0.54, size.width * 0.79, size.height * 0.67);
+    path.cubicTo(size.width * 0.81, size.height * 0.68, size.width * 0.84, size.height * 0.68, size.width * 0.87, size.height * 0.68);
+    path.cubicTo(size.width * 0.87, size.height * 0.67, size.width * 0.87, size.height * 0.67, size.width * 0.87, size.height * 0.67);
+    path.cubicTo(size.width * 0.85, size.height * 0.53, size.width * 0.84, size.height * 0.4, size.width * 0.83, size.height * 0.26);
+    path.cubicTo(size.width * 0.83, size.height * 0.26, size.width * 0.83, size.height * 0.26, size.width * 0.83, size.height * 0.26);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
 /* body: VimeoVideoPlayer(
 vimeoPlayerModel: VimeoPlayerModel(
 url: 'https://vimeo.com/70591644',

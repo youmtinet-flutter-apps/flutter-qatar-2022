@@ -7,15 +7,8 @@ import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({
-    Key? key,
-    required this.seek,
-    required this.standings,
-    required this.matches,
-  }) : super(key: key);
+  const SplashPage({Key? key, required this.seek}) : super(key: key);
   final bool seek;
-  final WorldcupStandings standings;
-  final WorldcupMatches matches;
   @override
   State<StatefulWidget> createState() => _SplashPageState();
 }
@@ -45,11 +38,7 @@ class _SplashPageState extends State<SplashPage> {
     Future.delayed(Duration(seconds: widget.seek ? 8 : 27), () {
       Get.offUntil(
         MaterialPageRoute(
-          builder: (context) => QatarWorldCup(
-            title: 'كأس العالم فيفا قطر 2022',
-            standings: widget.standings,
-            matches: widget.matches,
-          ),
+          builder: (context) => const QatarWorldCup(title: 'كأس العالم فيفا'),
         ),
         (e) => false,
       );

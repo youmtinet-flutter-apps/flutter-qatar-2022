@@ -7,8 +7,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:video_player/video_player.dart';
 
 void main() async {
-  WorldcupStandings standings = await fifaWCStandings() ?? WorldcupStandings.fromJson({});
-  WorldcupMatches matches = await fifaWCMatches() ?? WorldcupMatches.fromJson({});
   runApp(
     GetMaterialApp(
       title: 'كأس العالم فيفا قطر 2022',
@@ -18,24 +16,17 @@ void main() async {
         fontFamily: 'Qatar2022',
         primarySwatch: primarycolor,
       ),
-      home: SplashPage(
-        seek: true,
-        standings: standings,
-        matches: matches,
-      ),
+      home: const SplashPage(seek: true),
     ),
   );
 }
 
 class QatarWorldCup extends StatefulWidget {
-  const QatarWorldCup({
-    super.key,
-    required this.title,
-    required this.standings,
-    required this.matches,
-  });
-  final WorldcupMatches matches;
-  final WorldcupStandings standings;
+  const QatarWorldCup({super.key, required this.title});
+  /* required this.standings,
+    required this.matches, */
+  /* final WorldcupMatches matches;
+  final WorldcupStandings standings; */
   final String title;
 
   @override
@@ -83,7 +74,6 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
 
   @override
   Widget build(BuildContext context) {
-    var widgets2 = widgets(widget.matches.matches);
     // Console.log(widgets2.map((e) => '${e.stage} ${e.matches.length} || '));
     return Scaffold(
       appBar: AppBar(
@@ -101,88 +91,98 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
         ),
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          // VideoPlayer(videoPlayerController),
-          SingleChildScrollView(
-            // physics: const BouncingScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Stack(
-                  children: [
-                    ClipPath(
-                      clipper: Customshape(),
-                      child: Container(
-                        height: 200,
-                        width: MediaQuery.of(context).size.width,
-                        color: const Color(primarycolorPrimaryValue),
-                        child: Stack(
-                          children: const [BackgroundPattern()],
+      body: SingleChildScrollView(
+        // physics: const BouncingScrollPhysics(),
+        child: FutureBuilder<MAtchesAndStandings>(
+            future: fifaWCStandingsAndMatches(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Stack(
+                      children: [
+                        ClipPath(
+                          clipper: Customshape(),
+                          child: Container(
+                            height: 200,
+                            width: MediaQuery.of(context).size.width,
+                            color: const Color(primarycolorPrimaryValue),
+                            child: Stack(
+                              children: const [BackgroundPattern()],
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            width: Get.width * .3,
+                            child: Image.asset('assets/logo.png'),
+                          ),
+                        ),
+                        SizedBox(
+                          width: Get.width * .75,
+                          child: const Text(
+                            'قطر 2022',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ...modelData(snapshot.data!.matches).map(
+                      (e) => ExpansionTile(
+                        title: Text(
+                          stageName(e.stage),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        children: (e.groupMatches.isEmpty
+                                ? e.matches.map((e) => e.toView())
+                                : e.groupMatches.map(
+                                    (e) {
+                                      var firstStandl = snapshot.data!.standings.firstWhereOrNull((element) => element.group == e.group);
+                                      return Padding(
+                                        padding: const EdgeInsets.only(left: 18.0, right: 10),
+                                        child: ExpansionTile(
+                                          title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
+                                          children: [
+                                            ...e.matches.map((e) => e.toView()).toList(),
+                                            if (firstStandl != null) firstStandl.toView(),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ))
+                            .toList(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: ClipPath(
+                        clipper: FIFAPainter(),
+                        child: Container(
+                          height: 200,
+                          width: MediaQuery.of(context).size.width,
+                          color: const Color(primarycolorPrimaryValue),
+                          child: Stack(
+                            children: const [BackgroundPattern()],
+                          ),
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        width: Get.width * .3,
-                        child: Image.asset('assets/logo.png'),
-                      ),
-                    ),
+                    // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
                   ],
-                ),
-                // SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar-word.png')),
-                SizedBox(
-                    width: Get.width * .75,
-                    child: const Text(
-                      'قطر 2022',
-                      style: TextStyle(
-                        color: primarycolor,
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
-                // ...widgets(widget.matches.matches).map((e) => e.view()),
-                /* ListView.builder(
-                  itemCount: widgets2.length,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) => _buildList(widgets2[index]),
-                ), */
-                ...widgets2.map(
-                  (e) => ExpansionTile(
-                    // leading: list.icon != null ? Icon(list.icon) : null,
-                    title: Text(
-                      stageName(e.stage),
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    children: (e.groupMatches.isEmpty
-                            ? e.matches.map(
-                                (e) => e.toView(),
-                              )
-                            : e.groupMatches.map(
-                                (e) {
-                                  var firstStandl = widget.standings.standings.firstWhereOrNull((element) => element.group == e.group);
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 18.0, right: 10),
-                                    child: ExpansionTile(
-                                      title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
-                                      children: [
-                                        ...e.matches.map((e) => e.toView()).toList(),
-                                        if (firstStandl != null) firstStandl.toView(),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ))
-                        .toList(),
-                  ),
-                ),
-                // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
-              ],
-            ),
-          ),
-        ],
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
       ),
     );
   }
@@ -234,6 +234,14 @@ String stageName(title) {
   }
 }
 
+// SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar-word.png')),
+// ...widgets(widget.matches.matches).map((e) => e.view()),
+/* ListView.builder(
+    itemCount: widgets2.length,
+    shrinkWrap: true,
+    itemBuilder: (BuildContext context, int index) => _buildList(widgets2[index]),
+), */
+// leading: list.icon != null ? Icon(list.icon) : null,
 bool ine(Matche e) => e.homeTeam.crest.isNotEmpty;
 
 class GroupMatches {
@@ -268,7 +276,7 @@ class StageWithMatches {
   }
 }
 
-List<StageWithMatches> widgets(List<Matche> matches) {
+List<StageWithMatches> modelData(List<Matche> matches) {
   var vari = matches.fold<List<StageWithMatches>>(
     [],
     (previousValue, element) {

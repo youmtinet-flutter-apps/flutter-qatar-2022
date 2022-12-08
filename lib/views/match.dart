@@ -1,6 +1,10 @@
 // import 'package:console_tools/console_tools.dart';
+import 'dart:async';
+
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class MatchView extends StatefulWidget {
@@ -12,12 +16,20 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   @override
+  void initState() {
+    unawaited(initializeDateFormatting('ar', null));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Console.log('empty = ${widget.match.homeTeam.crest.isEmpty}');
     var matchTime = DateTime.parse(widget.match.utcDate);
+    // var matchTimeLocal = DateFormat.MMMMd(Get.locale).format(matchTime);
     var isNotStarted = matchTime.isBefore(DateTime.now());
     var homeTeamTla = widget.match.homeTeam.tla;
     var awayTeamTla = widget.match.awayTeam.tla;
+    var localeTime = DateFormat.Hm(Get.locale!.languageCode).format(matchTime);
+    var localeDate = DateFormat.MEd(Get.locale!.languageCode).format(matchTime);
     return SizedBox(
       height: 100,
       child: Padding(
@@ -74,7 +86,7 @@ class _MatchViewState extends State<MatchView> {
                       Expanded(
                           flex: 1,
                           child: Text(
-                            '${isNotStarted ? widget.match.score.fullTime.home : '-'}',
+                            '${isNotStarted ? widget.match.score.fullTime.away : '-'}',
                             textAlign: TextAlign.center,
                           )),
                       Expanded(
@@ -84,15 +96,15 @@ class _MatchViewState extends State<MatchView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(statusMatch(widget.match.status)),
-                            Text('${DateFormat.Hm().format(matchTime)} GMT'),
-                            Text(DateFormat.MEd().format(matchTime)),
+                            Text(convertNumbers(localeTime)),
+                            Text(convertNumbers(localeDate)),
                           ],
                         ),
                       ),
                       Expanded(
                         flex: 1,
                         child: Text(
-                          '${isNotStarted ? widget.match.score.fullTime.away : '-'}',
+                          '${isNotStarted ? widget.match.score.fullTime.home : '-'}',
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -144,6 +156,10 @@ class _MatchViewState extends State<MatchView> {
   }
 }
 
+String convertNumbers(String str) {
+  return str.replaceAll('٠', '0').replaceAll('١', '1').replaceAll('٢', '2').replaceAll('٣', '3').replaceAll('٤', '4').replaceAll('٥', '5').replaceAll('٦', '6').replaceAll('٧', '7').replaceAll('٨', '8').replaceAll('٩', '9');
+}
+
 String statusMatch(status) {
   switch (status) {
     case 'FINISHED':
@@ -154,6 +170,8 @@ String statusMatch(status) {
 
     case 'IN_PLAY':
       return "تلعب الآن";
+    case 'PAUSED':
+      return "بين الشوطين";
 
     default:
       return '';

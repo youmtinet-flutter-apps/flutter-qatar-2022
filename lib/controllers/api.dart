@@ -1,41 +1,42 @@
-import 'dart:convert';
-
 import 'package:console_tools/console_tools.dart';
 import 'package:fifa_worldcup/lib.dart';
-import 'package:http/http.dart';
+import 'package:get/get.dart';
+
+class MAtchesAndStandings {
+  List<Matche> matches = [];
+  List<Standings> standings = [];
+  MAtchesAndStandings({required this.matches, required this.standings});
+}
+
+var headers = {'X-Auth-Token': token};
+Future<MAtchesAndStandings> fifaWCStandingsAndMatches() async {
+  WorldcupStandings standings = await fifaWCStandings() ?? WorldcupStandings.fromJson({});
+  WorldcupMatches matches = await fifaWCMatches() ?? WorldcupMatches.fromJson({});
+  return MAtchesAndStandings(matches: matches.matches, standings: standings.standings);
+}
 
 Future<WorldcupStandings?> fifaWCStandings() async {
-  var headers = {'X-Auth-Token': token};
-  var request = Request('GET', Uri.parse('https://api.football-data.org/v4/competitions/2000/standings'));
+  var connect = GetConnect();
+  var getGet = await connect.get('https://api.football-data.org/v4/competitions/2000/standings', headers: headers);
 
-  request.headers.addAll(headers);
-
-  StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    var text = await response.stream.bytesToString();
-    var fromJson = WorldcupStandings.fromJson(json.decode(text));
+  if (getGet.isOk) {
+    var fromJson = WorldcupStandings.fromJson(getGet.body);
     return fromJson;
   } else {
-    Console.log(response.reasonPhrase);
+    Console.log(getGet.statusText);
   }
   return null;
 }
 
 Future<WorldcupMatches?> fifaWCMatches() async {
-  var headers = {'X-Auth-Token': token};
-  var request = Request('GET', Uri.parse('https://api.football-data.org/v4/competitions/2000/matches'));
+  var connect = GetConnect();
+  var getGet = await connect.get('https://api.football-data.org/v4/competitions/2000/matches', headers: headers);
 
-  request.headers.addAll(headers);
-
-  StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    var text = await response.stream.bytesToString();
-    var fromJson = WorldcupMatches.fromJson(json.decode(text));
+  if (getGet.isOk) {
+    var fromJson = WorldcupMatches.fromJson(getGet.body);
     return fromJson;
   } else {
-    Console.log(response.reasonPhrase);
+    Console.log(getGet.statusText);
   }
   return null;
 }
