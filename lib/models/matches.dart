@@ -60,8 +60,8 @@ class Matche {
   final String stage;
   final String group;
   final String lastUpdated;
-  final HomeTeam homeTeam;
-  final HomeTeam awayTeam;
+  final Team homeTeam;
+  final Team awayTeam;
   final Score score;
   final Odds odds;
   final List<Referees> referees;
@@ -82,7 +82,7 @@ class Matche {
     required this.odds,
     required this.referees,
   });
-  Matche copyWith({Area? area, Competition? competition, Season? season, int? id, String? utcDate, String? status, int? matchday, String? stage, String? group, String? lastUpdated, HomeTeam? homeTeam, HomeTeam? awayTeam, Score? score, Odds? odds, List<Referees>? referees}) {
+  Matche copyWith({Area? area, Competition? competition, Season? season, int? id, String? utcDate, String? status, int? matchday, String? stage, String? group, String? lastUpdated, Team? homeTeam, Team? awayTeam, Score? score, Odds? odds, List<Referees>? referees}) {
     return Matche(
         area: area ?? this.area,
         competition: competition ?? this.competition,
@@ -126,15 +126,15 @@ class Matche {
         area: json['area'] == null ? Area.fromJson({}) : Area.fromJson(json['area'] as Map<String, Object?>),
         competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>),
         season: json['season'] == null ? Season.fromJson({}) : Season.fromJson(json['season'] as Map<String, Object?>),
-        id: json['id'] == null ? 0 : json['id'] as int,
-        utcDate: json['utcDate'] == null ? '' : json['utcDate'] as String,
-        status: json['status'] == null ? '' : json['status'] as String,
-        matchday: json['matchday'] == null ? 0 : json['matchday'] as int,
-        stage: json['stage'] == null ? '' : json['stage'] as String,
-        group: json['group'] == null ? '' : json['group'] as String,
-        lastUpdated: json['lastUpdated'] == null ? '' : json['lastUpdated'] as String,
-        homeTeam: json['homeTeam'] == null ? HomeTeam.fromJson({}) : HomeTeam.fromJson(json['homeTeam'] as Map<String, Object?>),
-        awayTeam: json['awayTeam'] == null ? HomeTeam.fromJson({}) : HomeTeam.fromJson(json['awayTeam'] as Map<String, Object?>),
+        id: json['id'] == null ? -1 : json['id'] as int,
+        utcDate: json['utcDate'] == null ? 'null' : json['utcDate'] as String,
+        status: json['status'] == null ? 'null' : json['status'] as String,
+        matchday: json['matchday'] == null ? -1 : json['matchday'] as int,
+        stage: json['stage'] == null ? 'null' : json['stage'] as String,
+        group: json['group'] == null ? 'null' : json['group'] as String,
+        lastUpdated: json['lastUpdated'] == null ? 'null' : json['lastUpdated'] as String,
+        homeTeam: json['homeTeam'] == null ? Team.fromJson({}) : Team.fromJson(json['homeTeam'] as Map<String, Object?>),
+        awayTeam: json['awayTeam'] == null ? Team.fromJson({}) : Team.fromJson(json['awayTeam'] as Map<String, Object?>),
         score: json['score'] == null ? Score.fromJson({}) : Score.fromJson(json['score'] as Map<String, Object?>),
         odds: json['odds'] == null ? Odds.fromJson({}) : Odds.fromJson(json['odds'] as Map<String, Object?>),
         referees: json['referees'] == null ? [] : (json['referees'] as List).map<Referees>((data) => Referees.fromJson(data as Map<String, Object?>)).toList());
@@ -197,10 +197,10 @@ class Referees {
 
   static Referees fromJson(Map<String, Object?> json) {
     return Referees(
-      id: json['id'] == null ? 0 : json['id'] as int,
-      name: json['name'] == null ? '' : json['name'] as String,
-      type: json['type'] == null ? '' : json['type'] as String,
-      nationality: json['nationality'] == null ? '' : json['nationality'] as String,
+      id: json['id'] == null ? -1 : json['id'] as int,
+      name: json['name'] == null ? 'null' : json['name'] as String,
+      type: json['type'] == null ? 'null' : json['type'] as String,
+      nationality: json['nationality'] == null ? 'null' : json['nationality'] as String,
     );
   }
 
@@ -232,7 +232,7 @@ class Odds {
   }
 
   static Odds fromJson(Map<String, Object?> json) {
-    return Odds(msg: json['msg'] == null ? '' : json['msg'] as String);
+    return Odds(msg: json['msg'] == null ? 'null' : json['msg'] as String);
   }
 
   @override
@@ -267,8 +267,8 @@ class Score {
 
   static Score fromJson(Map<String, Object?> json) {
     return Score(
-      winner: json['winner'] == null ? '' : json['winner'] as String,
-      duration: json['duration'] == null ? '' : json['duration'] as String,
+      winner: json['winner'] == null ? 'null' : json['winner'] as String,
+      duration: json['duration'] == null ? 'null' : json['duration'] as String,
       fullTime: json['fullTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['fullTime'] as Map<String, Object?>),
       halfTime: json['halfTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['halfTime'] as Map<String, Object?>),
     );
@@ -304,8 +304,8 @@ class FullTime {
 
   static FullTime fromJson(Map<String, Object?> json) {
     return FullTime(
-      home: json['home'] == null ? 0 : json['home'] as int,
-      away: json['away'] == null ? 1 : json['away'] as int,
+      home: json['home'] == null ? -1 : json['home'] as int,
+      away: json['away'] == null ? -1 : json['away'] as int,
     );
   }
 
@@ -325,52 +325,52 @@ class FullTime {
   }
 }
 
-class HomeTeam {
+/* class Team {
   final int id;
   final String name;
   final String shortName;
   final String tla;
   final String crest;
-  const HomeTeam({
+  const Team({
     required this.id,
     required this.name,
     required this.shortName,
     required this.tla,
     required this.crest,
   });
-  HomeTeam copyWith({int? id, String? name, String? shortName, String? tla, String? crest}) {
-    return HomeTeam(id: id ?? this.id, name: name ?? this.name, shortName: shortName ?? this.shortName, tla: tla ?? this.tla, crest: crest ?? this.crest);
+  Team copyWith({int? id, String? name, String? shortName, String? tla, String? crest}) {
+    return Team(id: id ?? this.id, name: name ?? this.name, shortName: shortName ?? this.shortName, tla: tla ?? this.tla, crest: crest ?? this.crest);
   }
 
   Map<String, Object?> toJson() {
     return {'id': id, 'name': name, 'shortName': shortName, 'tla': tla, 'crest': crest};
   }
 
-  static HomeTeam fromJson(Map<String, Object?> json) {
-    return HomeTeam(
-      id: json['id'] == null ? 0 : json['id'] as int,
-      name: json['name'] == null ? '' : json['name'] as String,
-      shortName: json['shortName'] == null ? '' : json['shortName'] as String,
-      tla: json['tla'] == null ? '' : json['tla'] as String,
-      crest: json['crest'] == null ? '' : json['crest'] as String,
+  static Team fromJson(Map<String, Object?> json) {
+    return Team(
+      id: json['id'] == null ? -1 : json['id'] as int,
+      name: json['name'] == null ? 'null' : json['name'] as String,
+      shortName: json['shortName'] == null ? 'null' : json['shortName'] as String,
+      tla: json['tla'] == null ? 'null' : json['tla'] as String,
+      crest: json['crest'] == null ? 'null' : json['crest'] as String,
     );
   }
 
   @override
   String toString() {
-    return 'HomeTeam(id:$id,name:$name,shortName:$shortName,tla:$tla,crest:$crest)';
+    return 'Team(id:$id,name:$name,shortName:$shortName,tla:$tla,crest:$crest)';
   }
 
   @override
   bool operator ==(Object other) {
-    return other is HomeTeam && other.runtimeType == runtimeType && other.id == id && other.name == name && other.shortName == shortName && other.tla == tla && other.crest == crest;
+    return other is Team && other.runtimeType == runtimeType && other.id == id && other.name == name && other.shortName == shortName && other.tla == tla && other.crest == crest;
   }
 
   @override
   int get hashCode {
     return Object.hash(runtimeType, id, name, shortName, tla, crest);
   }
-}
+} */
 
 class Season {
   final int id;
@@ -400,7 +400,7 @@ class Season {
   }
 
   static Season fromJson(Map<String, Object?> json) {
-    return Season(id: json['id'] == null ? 0 : json['id'] as int, startDate: json['startDate'] == null ? '' : json['startDate'] as String, endDate: json['endDate'] == null ? '' : json['endDate'] as String, currentMatchday: json['currentMatchday'] == null ? 1 : json['currentMatchday'] as int, winner: json['winner'] as dynamic);
+    return Season(id: json['id'] == null ? -1 : json['id'] as int, startDate: json['startDate'] == null ? 'null' : json['startDate'] as String, endDate: json['endDate'] == null ? 'null' : json['endDate'] as String, currentMatchday: json['currentMatchday'] == null ? -1 : json['currentMatchday'] as int, winner: json['winner'] as dynamic);
   }
 
   @override
@@ -440,9 +440,9 @@ class Area {
 
   static Area fromJson(Map<String, Object?> json) {
     return Area(
-      id: json['id'] == null ? 0 : json['id'] as int,
-      name: json['name'] == null ? '' : json['name'] as String,
-      code: json['code'] == null ? '' : json['code'] as String,
+      id: json['id'] == null ? -1 : json['id'] as int,
+      name: json['name'] == null ? 'null' : json['name'] as String,
+      code: json['code'] == null ? 'null' : json['code'] as String,
       flag: json['flag'] as dynamic,
     );
   }
@@ -486,11 +486,11 @@ class Competition {
 
   static Competition fromJson(Map<String, Object?> json) {
     return Competition(
-      id: json['id'] == null ? 0 : json['id'] as int,
-      name: json['name'] == null ? '' : json['name'] as String,
-      code: json['code'] == null ? '' : json['code'] as String,
-      type: json['type'] == null ? '' : json['type'] as String,
-      emblem: json['emblem'] == null ? '' : json['emblem'] as String,
+      id: json['id'] == null ? -1 : json['id'] as int,
+      name: json['name'] == null ? 'null' : json['name'] as String,
+      code: json['code'] == null ? 'null' : json['code'] as String,
+      type: json['type'] == null ? 'null' : json['type'] as String,
+      emblem: json['emblem'] == null ? 'null' : json['emblem'] as String,
     );
   }
 
@@ -530,7 +530,7 @@ class ResultSet {
   }
 
   static ResultSet fromJson(Map<String, Object?> json) {
-    return ResultSet(count: json['count'] == null ? 0 : json['count'] as int, first: json['first'] == null ? '' : json['first'] as String, last: json['last'] == null ? '' : json['last'] as String, played: json['played'] == null ? 1 : json['played'] as int);
+    return ResultSet(count: json['count'] == null ? -1 : json['count'] as int, first: json['first'] == null ? 'null' : json['first'] as String, last: json['last'] == null ? 'null' : json['last'] as String, played: json['played'] == null ? -1 : json['played'] as int);
   }
 
   @override
@@ -561,7 +561,7 @@ class Filters {
   }
 
   static Filters fromJson(Map<String, Object?> json) {
-    return Filters(season: json['season'] == null ? '' : json['season'] as String);
+    return Filters(season: json['season'] == null ? 'null' : json['season'] as String);
   }
 
   @override

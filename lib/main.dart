@@ -97,6 +97,8 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
             future: fifaWCStandingsAndMatches(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                var dateTime = DateTime.now().toUtc();
+
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -160,6 +162,12 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                             .toList(),
                       ),
                     ),
+                    GoalRankk(
+                        gls: goalsRanking(snapshot.data!.matches.where((element) {
+                      var matchTime = DateTime.parse(element.utcDate);
+                      var isStarted = matchTime.isBefore(dateTime);
+                      return isStarted;
+                    }).toList())),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: ClipPath(
@@ -276,6 +284,35 @@ class StageWithMatches {
   }
 }
 
+List<GoalRanking> goalsRanking(List<Matche> matches) {
+  var gls = matches.fold<List<GoalRanking>>(
+    matches.fold(
+      [],
+      (previousRankings, currentMatche) {
+        if (previousRankings.where((e) => e.team == currentMatche.homeTeam).isEmpty) {
+          previousRankings.add(GoalRanking(received: 0, scored: 0, team: currentMatche.homeTeam));
+        }
+        return previousRankings;
+      },
+    ),
+    (previousMatches2, currentMatche2) {
+      var homeTeam = previousMatches2.firstWhereOrNull((e) => e.team == currentMatche2.homeTeam);
+      if (homeTeam != null) {
+        homeTeam.increaseReceive = currentMatche2.score.fullTime.away;
+        homeTeam.increaseScored = currentMatche2.score.fullTime.home;
+      }
+      var awayTeam = previousMatches2.firstWhereOrNull((e) => e.team == currentMatche2.awayTeam);
+      if (awayTeam != null) {
+        awayTeam.increaseReceive = currentMatche2.score.fullTime.home;
+        awayTeam.increaseScored = currentMatche2.score.fullTime.away;
+      }
+      return previousMatches2;
+    },
+  );
+
+  return gls;
+}
+
 List<StageWithMatches> modelData(List<Matche> matches) {
   var vari = matches.fold<List<StageWithMatches>>(
     [],
@@ -306,4 +343,23 @@ List<StageWithMatches> modelData(List<Matche> matches) {
     groupStage.first.groupMatches = expansionGroups;
   }
   return vari;
+}
+
+class GoalRanking {
+  Team team;
+  int scored;
+  int received;
+  GoalRanking({required this.received, required this.scored, required this.team});
+  set increaseReceive(int score) {
+    received += score;
+  }
+
+  set increaseScored(int score) {
+    scored += score;
+  }
+
+  @override
+  String toString() {
+    return '${team.name} received: $received and scored $scored';
+  }
 }

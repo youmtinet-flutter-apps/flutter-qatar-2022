@@ -1,6 +1,5 @@
 // import 'package:console_tools/console_tools.dart';
 import 'dart:async';
-
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,9 +22,10 @@ class _MatchViewState extends State<MatchView> {
 
   @override
   Widget build(BuildContext context) {
-    var matchTime = DateTime.parse(widget.match.utcDate);
     // var matchTimeLocal = DateFormat.MMMMd(Get.locale).format(matchTime);
-    var isNotStarted = matchTime.isBefore(DateTime.now());
+    var matchTime = DateTime.parse(widget.match.utcDate);
+    var now = DateTime.now().toUtc();
+    var isStarted = matchTime.isBefore(now);
     var homeTeamTla = widget.match.homeTeam.tla;
     var awayTeamTla = widget.match.awayTeam.tla;
     var localeTime = DateFormat.Hm(Get.locale!.languageCode).format(matchTime);
@@ -38,36 +38,34 @@ class _MatchViewState extends State<MatchView> {
           children: [
             Expanded(
               flex: 1,
-              child: FittedBox(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: primarycolor,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(36),
-                      bottomRight: Radius.circular(36),
-                    ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: primarycolor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(36),
+                    bottomRight: Radius.circular(36),
                   ),
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TeamAvatar(
-                          team: Team.fromJson({}).copyWith(
-                            crest: widget.match.awayTeam.crest,
-                            id: widget.match.awayTeam.id,
-                            name: widget.match.awayTeam.name,
-                            shortName: widget.match.awayTeam.name,
-                            tla: awayTeamTla,
-                          ),
+                ),
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TeamAvatar(
+                        team: Team.fromJson({}).copyWith(
+                          crest: widget.match.awayTeam.crest,
+                          id: widget.match.awayTeam.id,
+                          name: widget.match.awayTeam.name,
+                          shortName: widget.match.awayTeam.name,
+                          tla: awayTeamTla,
                         ),
-                        Text(
-                          awayTeamTla.isEmpty ? 'TBD' : awayTeamTla,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        awayTeamTla.isEmpty ? 'TBD' : awayTeamTla,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -80,22 +78,22 @@ class _MatchViewState extends State<MatchView> {
                 ),
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
                       Expanded(
                           flex: 1,
                           child: Text(
-                            '${isNotStarted ? widget.match.score.fullTime.away : '-'}',
+                            '${isStarted ? widget.match.score.fullTime.away : '-'}',
                             textAlign: TextAlign.center,
                           )),
                       Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(statusMatch(widget.match.status)),
+                            Text('${statusMatch(widget.match.status)} : ${durationMatch(widget.match.score.duration)}'),
                             Text(convertNumbers(localeTime)),
                             Text(convertNumbers(localeDate)),
                           ],
@@ -104,7 +102,7 @@ class _MatchViewState extends State<MatchView> {
                       Expanded(
                         flex: 1,
                         child: Text(
-                          '${isNotStarted ? widget.match.score.fullTime.home : '-'}',
+                          '${isStarted ? widget.match.score.fullTime.home : '-'}',
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -115,36 +113,34 @@ class _MatchViewState extends State<MatchView> {
             ),
             Expanded(
               flex: 1,
-              child: FittedBox(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: primarycolor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(36),
-                      bottomLeft: Radius.circular(36),
-                    ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: primarycolor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(36),
+                    bottomLeft: Radius.circular(36),
                   ),
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TeamAvatar(
-                          team: Team.fromJson({}).copyWith(
-                            crest: widget.match.homeTeam.crest,
-                            id: widget.match.homeTeam.id,
-                            name: widget.match.homeTeam.name,
-                            shortName: widget.match.homeTeam.name,
-                            tla: homeTeamTla,
-                          ),
+                ),
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TeamAvatar(
+                        team: Team.fromJson({}).copyWith(
+                          crest: widget.match.homeTeam.crest,
+                          id: widget.match.homeTeam.id,
+                          name: widget.match.homeTeam.name,
+                          shortName: widget.match.homeTeam.name,
+                          tla: homeTeamTla,
                         ),
-                        Text(
-                          homeTeamTla.isEmpty ? 'TBD' : homeTeamTla,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        homeTeamTla.isEmpty ? 'TBD' : homeTeamTla,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -175,5 +171,21 @@ String statusMatch(status) {
 
     default:
       return '';
+  }
+}
+
+String durationMatch(status) {
+  switch (status) {
+    case 'PENALTY_SHOOTOUT':
+      return "ركلات الترجيح";
+
+    case 'REGULAR':
+      return "الوقت الأصلي";
+
+    case 'EXTRA_TIME':
+      return "الوقت الإضافي";
+
+    default:
+      return "الوقت الأصلي";
   }
 }

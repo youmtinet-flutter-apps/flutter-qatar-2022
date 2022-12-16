@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:console_tools/console_tools.dart';
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:video_player/video_player.dart';
+import 'package:native_video_player/native_video_player.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key, required this.seek}) : super(key: key);
@@ -14,7 +15,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  late VideoPlayerController _controller;
+//   late VideoPlayerController _controller;
   bool _visible = false;
 
   @override
@@ -23,33 +24,33 @@ class _SplashPageState extends State<SplashPage> {
       DeviceOrientation.portraitUp,
     ]);
 
-    _controller = VideoPlayerController.asset("assets/videosplash.mp4");
-    _controller.initialize().then((_) {
-      //   _controller.setLooping(true);
-      Timer(const Duration(milliseconds: 100), () async {
-        await _controller.seekTo(Duration(seconds: widget.seek ? 20 : 0));
-        await _controller.play();
-        setState(() {
-          _visible = true;
-        });
+    /* _controller = VideoPlayerController.asset("assets/videosplash.mp4");
+    _controller.initialize().then((_) { */
+    //   _controller.setLooping(true);
+    Timer(const Duration(milliseconds: 100), () async {
+      /* await _controller.seekTo(Duration(seconds: widget.seek ? 20 : 0));
+        await _controller.play(); */
+      setState(() {
+        _visible = true;
       });
     });
+    /* }); */
 
-    Future.delayed(Duration(seconds: widget.seek ? 8 : 27), () {
+    /* Future.delayed(Duration(seconds: widget.seek ? 8 : 27), () {
       Get.offUntil(
         MaterialPageRoute(
           builder: (context) => const QatarWorldCup(title: 'كأس العالم فيفا'),
         ),
         (e) => false,
       );
-    });
+    }); */
 
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
@@ -65,7 +66,47 @@ class _SplashPageState extends State<SplashPage> {
         child: AnimatedOpacity(
           opacity: _visible ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 1000),
-          child: VideoPlayer(_controller),
+          //   child: VideoPlayer(_controller),
+          child: NativeVideoPlayerView(
+            onViewReady: (controller) async {
+              final videoSource = await VideoSource.init(path: 'assets/videosplash.mp4', type: VideoSourceType.asset);
+              await controller.loadVideoSource(videoSource);
+              await controller.seekForward(widget.seek ? 20 : 0);
+              await controller.setVolume(1);
+              await controller.play();
+              controller.onPlaybackReady.addListener(() {
+                /* final videoInfo = controller.videoInfo;
+                if (videoInfo != null) {
+                  final videoWidth = videoInfo.width;
+                  final videoHeight = videoInfo.height;
+                  final videoDuration = videoInfo.duration;
+                } */
+              });
+              controller.onPlaybackStatusChanged.addListener(() {
+                var playbackInfo = controller.playbackInfo;
+                if (playbackInfo != null) {
+                  final playbackStatus = playbackInfo.status;
+                  if (playbackStatus == PlaybackStatus.stopped) {
+                    Get.offUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const QatarWorldCup(title: 'كأس العالم فيفا'),
+                      ),
+                      (e) => false,
+                    );
+                  }
+                }
+                // playbackStatus can be playing, paused, or stopped.
+              });
+              controller.onPlaybackPositionChanged.addListener(() {
+                var playbackInfo = controller.playbackInfo;
+                if (playbackInfo != null) {
+                  final playbackPosition = playbackInfo.position;
+                  Console.log(playbackPosition, color: ConsoleColors.greenSap);
+                }
+              });
+              controller.onPlaybackEnded.addListener(() {});
+            },
+          ),
         ),
       ),
     );
