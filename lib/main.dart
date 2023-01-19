@@ -91,87 +91,21 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
         ),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        // physics: const BouncingScrollPhysics(),
-        child: FutureBuilder<MAtchesAndStandings>(
-            future: fifaWCStandingsAndMatches(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var dateTime = DateTime.now().toUtc();
+      body: FutureBuilder<MAtchesAndStandings>(
+        future: fifaWCStandingsAndMatches(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var dateTime = DateTime.now().toUtc();
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        ClipPath(
-                          clipper: Customshape(),
-                          child: Container(
-                            height: 200,
-                            width: MediaQuery.of(context).size.width,
-                            color: const Color(primarycolorPrimaryValue),
-                            child: Stack(
-                              children: const [BackgroundPattern()],
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: SizedBox(
-                            width: Get.width * .3,
-                            child: Image.asset('assets/logo.png'),
-                          ),
-                        ),
-                        SizedBox(
-                          width: Get.width * .75,
-                          child: const Text(
-                            'قطر 2022',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                    ...modelData(snapshot.data!.matches).map(
-                      (e) => ExpansionTile(
-                        title: Text(
-                          stageName(e.stage),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        children: (e.groupMatches.isEmpty
-                                ? e.matches.map((e) => e.toView())
-                                : e.groupMatches.map(
-                                    (e) {
-                                      var firstStandl = snapshot.data!.standings.firstWhereOrNull((element) => element.group == e.group);
-                                      return Padding(
-                                        padding: const EdgeInsets.only(left: 18.0, right: 10),
-                                        child: ExpansionTile(
-                                          title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
-                                          children: [
-                                            ...e.matches.map((e) => e.toView()).toList(),
-                                            if (firstStandl != null) firstStandl.toView(),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ))
-                            .toList(),
-                      ),
-                    ),
-                    GoalRankk(
-                        gls: goalsRanking(snapshot.data!.matches.where((element) {
-                      var matchTime = DateTime.parse(element.utcDate);
-                      var isStarted = matchTime.isBefore(dateTime);
-                      return isStarted;
-                    }).toList())),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ClipPath(
-                        clipper: FIFAPainter(),
+            return SingleChildScrollView(
+              // physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Stack(
+                    children: [
+                      ClipPath(
+                        clipper: Customshape(),
                         child: Container(
                           height: 200,
                           width: MediaQuery.of(context).size.width,
@@ -181,19 +115,101 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                           ),
                         ),
                       ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                          width: Get.width * .3,
+                          child: Image.asset('assets/logo.png'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: Get.width * .75,
+                        child: const Text(
+                          'قطر 2022',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...modelData(snapshot.data!.matches).map(
+                    (e) => ExpansionTile(
+                      title: Text(
+                        stageName(e.stage),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      children: (e.groupMatches.isEmpty
+                              ? e.matches.map((e) => e.toView())
+                              : e.groupMatches.map(
+                                  (e) {
+                                    var firstStandl = snapshot.data!.standings.firstWhereOrNull((element) => element.group == e.group);
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 18.0, right: 10),
+                                      child: ExpansionTile(
+                                        title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
+                                        children: [
+                                          ...e.matches.map((e) => e.toView()).toList(),
+                                          if (firstStandl != null) firstStandl.toView(),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ))
+                          .toList(),
                     ),
-                    // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
-                  ],
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+                  ),
+                  GoalRankk(
+                      gls: goalsRanking(snapshot.data!.matches.where((element) {
+                    var matchTime = DateTime.parse(element.utcDate);
+                    var isStarted = matchTime.isBefore(dateTime);
+                    return isStarted;
+                  }).toList())),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      children: [
+                        ClipPath(clipper: TheAinFIFA(), child: containerBack(.25)),
+                        ClipPath(clipper: TheFinFIFA(), child: containerBack(.2)),
+                        const Expanded(child: SizedBox()),
+                        ClipPath(clipper: TheIinFIFA(), child: containerBack(.1)),
+                        const Expanded(child: SizedBox()),
+                        ClipPath(clipper: TheFinFIFA(), child: containerBack(.2)),
+                      ],
+                    ),
+                  ),
+                  //   ClipPath(clipper: TheFIFAClipper(), child: containerBack(1)),
+                  // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
+                ],
+              ),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(
+                backgroundColor: primarycolor.shade100,
+              ),
+            );
+          }
+        },
       ),
     );
   }
+}
+
+Widget containerBack(double widthPercent) {
+  return Builder(builder: (context) {
+    return Container(
+      height: 200,
+      width: MediaQuery.of(context).size.width * widthPercent,
+      color: const Color(primarycolorPrimaryValue),
+      child: Stack(
+        children: const [BackgroundPattern()],
+      ),
+    );
+  });
 }
 
 class BackgroundPattern extends StatelessWidget {
@@ -234,15 +250,18 @@ String stageName(title) {
     case 'THIRD_PLACE':
       return "المركز الثالث";
 
+    case 'BRONZE':
+      return "البرونزية";
+
     case 'FINAL':
       return "النهائي";
 
     default:
-      return "النهائي";
+      return title;
   }
 }
 
-// SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar-word.png')),
+// SizedBox(width: Get.width * .75, child: Image.asset('assets/qatar_word.png')),
 // ...widgets(widget.matches.matches).map((e) => e.view()),
 /* ListView.builder(
     itemCount: widgets2.length,
@@ -290,21 +309,39 @@ List<GoalRanking> goalsRanking(List<Matche> matches) {
       [],
       (previousRankings, currentMatche) {
         if (previousRankings.where((e) => e.team == currentMatche.homeTeam).isEmpty) {
-          previousRankings.add(GoalRanking(received: 0, scored: 0, team: currentMatche.homeTeam));
+          previousRankings.add(GoalRanking(team: currentMatche.homeTeam));
         }
         return previousRankings;
       },
     ),
     (previousMatches2, currentMatche2) {
       var homeTeam = previousMatches2.firstWhereOrNull((e) => e.team == currentMatche2.homeTeam);
-      if (homeTeam != null) {
-        homeTeam.increaseReceive = currentMatche2.score.fullTime.away;
-        homeTeam.increaseScored = currentMatche2.score.fullTime.home;
-      }
       var awayTeam = previousMatches2.firstWhereOrNull((e) => e.team == currentMatche2.awayTeam);
       if (awayTeam != null) {
-        awayTeam.increaseReceive = currentMatche2.score.fullTime.home;
-        awayTeam.increaseScored = currentMatche2.score.fullTime.away;
+        awayTeam.increaseReceiveFullTime = currentMatche2.score.fullTime.home;
+        awayTeam.increaseScoredFullTime = currentMatche2.score.fullTime.away;
+        //
+        awayTeam.increaseReceiveExtraTime = currentMatche2.score.extraTime.home;
+        awayTeam.increaseScoredExtraTime = currentMatche2.score.extraTime.away;
+        //
+        awayTeam.increaseReceiveRegularTime = currentMatche2.score.regularTime.home;
+        awayTeam.increaseScoredRegularTime = currentMatche2.score.regularTime.away;
+        //
+        awayTeam.increaseReceivePenalties = currentMatche2.score.penalties.home;
+        awayTeam.increaseScoredPenalties = currentMatche2.score.penalties.away;
+      }
+      if (homeTeam != null) {
+        homeTeam.increaseReceiveFullTime = currentMatche2.score.fullTime.away;
+        homeTeam.increaseScoredFullTime = currentMatche2.score.fullTime.home;
+        //
+        homeTeam.increaseReceiveExtraTime = currentMatche2.score.extraTime.away;
+        homeTeam.increaseScoredExtraTime = currentMatche2.score.extraTime.home;
+        //
+        homeTeam.increaseReceiveRegularTime = currentMatche2.score.regularTime.away;
+        homeTeam.increaseScoredRegularTime = currentMatche2.score.regularTime.home;
+        //
+        homeTeam.increaseReceivePenalties = currentMatche2.score.penalties.away;
+        homeTeam.increaseScoredPenalties = currentMatche2.score.penalties.home;
       }
       return previousMatches2;
     },
@@ -347,19 +384,60 @@ List<StageWithMatches> modelData(List<Matche> matches) {
 
 class GoalRanking {
   Team team;
-  int scored;
-  int received;
-  GoalRanking({required this.received, required this.scored, required this.team});
-  set increaseReceive(int score) {
-    received += score;
+  int scoredFT;
+  int receivedFT;
+  int scoredRT;
+  int receivedRT;
+  int scoredET;
+  int receivedET;
+  int scoredPT;
+  int receivedPT;
+  GoalRanking({
+    required this.team,
+    this.receivedFT = 0,
+    this.scoredFT = 0,
+    this.scoredRT = 0,
+    this.receivedRT = 0,
+    this.scoredET = 0,
+    this.receivedET = 0,
+    this.scoredPT = 0,
+    this.receivedPT = 0,
+  });
+
+  set increaseReceivePenalties(int score) {
+    receivedPT += score;
   }
 
-  set increaseScored(int score) {
-    scored += score;
+  set increaseScoredPenalties(int score) {
+    scoredPT += score;
+  }
+
+  set increaseReceiveExtraTime(int score) {
+    receivedET += score;
+  }
+
+  set increaseScoredExtraTime(int score) {
+    scoredET += score;
+  }
+
+  set increaseReceiveRegularTime(int score) {
+    receivedRT += score;
+  }
+
+  set increaseScoredRegularTime(int score) {
+    scoredRT += score;
+  }
+
+  set increaseReceiveFullTime(int score) {
+    receivedFT += score;
+  }
+
+  set increaseScoredFullTime(int score) {
+    scoredFT += score;
   }
 
   @override
   String toString() {
-    return '${team.name} received: $received and scored $scored';
+    return '${team.name} received: $receivedFT and scored $scoredFT';
   }
 }

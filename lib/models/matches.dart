@@ -126,10 +126,10 @@ class Matche {
         area: json['area'] == null ? Area.fromJson({}) : Area.fromJson(json['area'] as Map<String, Object?>),
         competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>),
         season: json['season'] == null ? Season.fromJson({}) : Season.fromJson(json['season'] as Map<String, Object?>),
-        id: json['id'] == null ? -1 : json['id'] as int,
+        id: json['id'] == null ? 0 : json['id'] as int,
         utcDate: json['utcDate'] == null ? 'null' : json['utcDate'] as String,
         status: json['status'] == null ? 'null' : json['status'] as String,
-        matchday: json['matchday'] == null ? -1 : json['matchday'] as int,
+        matchday: json['matchday'] == null ? 0 : json['matchday'] as int,
         stage: json['stage'] == null ? 'null' : json['stage'] as String,
         group: json['group'] == null ? 'null' : json['group'] as String,
         lastUpdated: json['lastUpdated'] == null ? 'null' : json['lastUpdated'] as String,
@@ -197,7 +197,7 @@ class Referees {
 
   static Referees fromJson(Map<String, Object?> json) {
     return Referees(
-      id: json['id'] == null ? -1 : json['id'] as int,
+      id: json['id'] == null ? 0 : json['id'] as int,
       name: json['name'] == null ? 'null' : json['name'] as String,
       type: json['type'] == null ? 'null' : json['type'] as String,
       nationality: json['nationality'] == null ? 'null' : json['nationality'] as String,
@@ -256,13 +256,50 @@ class Score {
   final String duration;
   final FullTime fullTime;
   final FullTime halfTime;
-  const Score({required this.winner, required this.duration, required this.fullTime, required this.halfTime});
-  Score copyWith({String? winner, String? duration, FullTime? fullTime, FullTime? halfTime}) {
-    return Score(winner: winner ?? this.winner, duration: duration ?? this.duration, fullTime: fullTime ?? this.fullTime, halfTime: halfTime ?? this.halfTime);
+  final FullTime regularTime;
+  final FullTime extraTime;
+  final FullTime penalties;
+
+  const Score({
+    required this.winner,
+    required this.duration,
+    required this.fullTime,
+    required this.halfTime,
+    required this.regularTime,
+    required this.extraTime,
+    required this.penalties,
+  });
+
+  Score copyWith({
+    String? winner,
+    String? duration,
+    FullTime? fullTime,
+    FullTime? halfTime,
+    FullTime? regularTime,
+    FullTime? extraTime,
+    FullTime? penalties,
+  }) {
+    return Score(
+      winner: winner ?? this.winner,
+      duration: duration ?? this.duration,
+      fullTime: fullTime ?? this.fullTime,
+      halfTime: halfTime ?? this.halfTime,
+      regularTime: regularTime ?? this.regularTime,
+      extraTime: extraTime ?? this.extraTime,
+      penalties: penalties ?? this.penalties,
+    );
   }
 
   Map<String, Object?> toJson() {
-    return {'winner': winner, 'duration': duration, 'fullTime': fullTime.toJson(), 'halfTime': halfTime.toJson()};
+    return {
+      'winner': winner,
+      'duration': duration,
+      'fullTime': fullTime.toJson(),
+      'halfTime': halfTime.toJson(),
+      'regularTime': regularTime.toJson(),
+      'extraTime': extraTime.toJson(),
+      'penalties': penalties.toJson(),
+    };
   }
 
   static Score fromJson(Map<String, Object?> json) {
@@ -271,22 +308,25 @@ class Score {
       duration: json['duration'] == null ? 'null' : json['duration'] as String,
       fullTime: json['fullTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['fullTime'] as Map<String, Object?>),
       halfTime: json['halfTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['halfTime'] as Map<String, Object?>),
+      regularTime: json['regularTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['regularTime'] as Map<String, Object?>),
+      extraTime: json['extraTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['extraTime'] as Map<String, Object?>),
+      penalties: json['penalties'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['penalties'] as Map<String, Object?>),
     );
   }
 
   @override
   String toString() {
-    return 'Score(winner:$winner,duration:$duration,fullTime:${fullTime.toString()},halfTime:${halfTime.toString()})';
+    return 'Score(winner:$winner,duration:$duration,fullTime:${fullTime.toString()},halfTime:${halfTime.toString()},regularTime:${regularTime.toString()},extraTime:${extraTime.toString()},penalties:${penalties.toString()})';
   }
 
   @override
   bool operator ==(Object other) {
-    return other is Score && other.runtimeType == runtimeType && other.winner == winner && other.duration == duration && other.fullTime == fullTime && other.halfTime == halfTime;
+    return other is Score && other.runtimeType == runtimeType && other.winner == winner && other.duration == duration && other.fullTime == fullTime && other.halfTime == halfTime && other.regularTime == regularTime && other.extraTime == extraTime && other.penalties == penalties;
   }
 
   @override
   int get hashCode {
-    return Object.hash(runtimeType, winner, duration, fullTime, halfTime);
+    return Object.hash(runtimeType, winner, duration, fullTime, halfTime, regularTime, extraTime, penalties);
   }
 }
 
@@ -304,8 +344,8 @@ class FullTime {
 
   static FullTime fromJson(Map<String, Object?> json) {
     return FullTime(
-      home: json['home'] == null ? -1 : json['home'] as int,
-      away: json['away'] == null ? -1 : json['away'] as int,
+      home: json['home'] == null ? 0 : json['home'] as int,
+      away: json['away'] == null ? 0 : json['away'] as int,
     );
   }
 
@@ -348,7 +388,7 @@ class FullTime {
 
   static Team fromJson(Map<String, Object?> json) {
     return Team(
-      id: json['id'] == null ? -1 : json['id'] as int,
+      id: json['id'] == null ? 0 : json['id'] as int,
       name: json['name'] == null ? 'null' : json['name'] as String,
       shortName: json['shortName'] == null ? 'null' : json['shortName'] as String,
       tla: json['tla'] == null ? 'null' : json['tla'] as String,
@@ -400,7 +440,7 @@ class Season {
   }
 
   static Season fromJson(Map<String, Object?> json) {
-    return Season(id: json['id'] == null ? -1 : json['id'] as int, startDate: json['startDate'] == null ? 'null' : json['startDate'] as String, endDate: json['endDate'] == null ? 'null' : json['endDate'] as String, currentMatchday: json['currentMatchday'] == null ? -1 : json['currentMatchday'] as int, winner: json['winner'] as dynamic);
+    return Season(id: json['id'] == null ? 0 : json['id'] as int, startDate: json['startDate'] == null ? 'null' : json['startDate'] as String, endDate: json['endDate'] == null ? 'null' : json['endDate'] as String, currentMatchday: json['currentMatchday'] == null ? 0 : json['currentMatchday'] as int, winner: json['winner'] as dynamic);
   }
 
   @override
@@ -440,7 +480,7 @@ class Area {
 
   static Area fromJson(Map<String, Object?> json) {
     return Area(
-      id: json['id'] == null ? -1 : json['id'] as int,
+      id: json['id'] == null ? 0 : json['id'] as int,
       name: json['name'] == null ? 'null' : json['name'] as String,
       code: json['code'] == null ? 'null' : json['code'] as String,
       flag: json['flag'] as dynamic,
@@ -486,7 +526,7 @@ class Competition {
 
   static Competition fromJson(Map<String, Object?> json) {
     return Competition(
-      id: json['id'] == null ? -1 : json['id'] as int,
+      id: json['id'] == null ? 0 : json['id'] as int,
       name: json['name'] == null ? 'null' : json['name'] as String,
       code: json['code'] == null ? 'null' : json['code'] as String,
       type: json['type'] == null ? 'null' : json['type'] as String,
@@ -530,7 +570,7 @@ class ResultSet {
   }
 
   static ResultSet fromJson(Map<String, Object?> json) {
-    return ResultSet(count: json['count'] == null ? -1 : json['count'] as int, first: json['first'] == null ? 'null' : json['first'] as String, last: json['last'] == null ? 'null' : json['last'] as String, played: json['played'] == null ? -1 : json['played'] as int);
+    return ResultSet(count: json['count'] == null ? 0 : json['count'] as int, first: json['first'] == null ? 'null' : json['first'] as String, last: json['last'] == null ? 'null' : json['last'] as String, played: json['played'] == null ? 0 : json['played'] as int);
   }
 
   @override

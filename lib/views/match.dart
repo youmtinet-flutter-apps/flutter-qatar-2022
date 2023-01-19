@@ -84,7 +84,7 @@ class _MatchViewState extends State<MatchView> {
                       Expanded(
                           flex: 1,
                           child: Text(
-                            '${isStarted ? widget.match.score.fullTime.away : '-'}',
+                            '${isStarted ? widget.match.score.fullTime.away : '•'}',
                             textAlign: TextAlign.center,
                           )),
                       Expanded(
@@ -102,7 +102,7 @@ class _MatchViewState extends State<MatchView> {
                       Expanded(
                         flex: 1,
                         child: Text(
-                          '${isStarted ? widget.match.score.fullTime.home : '-'}',
+                          '${isStarted ? widget.match.score.fullTime.home : '•'}',
                           textAlign: TextAlign.center,
                         ),
                       ),
