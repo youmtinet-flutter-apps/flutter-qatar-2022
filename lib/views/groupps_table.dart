@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart';
@@ -133,18 +135,18 @@ class TeamAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double size = 33;
+    double size = 33.h;
     return SizedBox(
       width: size,
       height: size,
       child: ClipOval(
         clipBehavior: Clip.hardEdge,
         child: team.crest.isEmpty
-            ? const Icon(
+            ? Icon(
                 Icons.sports_soccer_sharp,
                 size: size - 8,
                 color: Colors.white,
-                shadows: [Shadow(blurRadius: 5, color: Colors.white)],
+                shadows: const [Shadow(blurRadius: 5, color: Colors.white)],
               )
             : extension(team.crest) == '.svg'
                 ? FutureBuilder(
@@ -160,10 +162,10 @@ class TeamAvatar extends StatelessWidget {
                           : const Center(child: CupertinoActivityIndicator());
                     },
                   )
-                : Image.network(
-                    team.crest,
+                : CachedNetworkImage(
+                    imageUrl: team.crest,
                     width: size,
-                    fit: BoxFit.fitHeight,
+                    fit: BoxFit.cover,
                     height: size,
                   ),
       ),

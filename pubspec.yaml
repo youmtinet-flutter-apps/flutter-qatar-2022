@@ -6,7 +6,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.18.2 <3.0.0"
+  sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -16,16 +16,18 @@ dependencies:
   console_tools: ^1.0.0
   http: ^0.13.5
   just_audio: ^0.9.30
-  
+
   get: ^4.6.5
-  video_player: ^2.4.8
+  video_player: ^2.8.5
   provider: ^6.0.4
   flutter_svg: ^1.1.6
   path_provider: ^2.0.11
   path: ^1.8.2
   intl: ^0.17.0
   get_time_ago: ^1.1.8
-  native_video_player: ^1.1.0+2
+  wakelock_plus: ^1.1.4
+  flutter_screenutil: ^5.9.3
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -35,15 +37,14 @@ dev_dependencies:
   flutter_launcher_icons: ^0.10.0
   flutter_native_splash: ^2.2.10+1
 
-
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:
-  image_path: assets/android12.png
+  image_path: src/android12.png
   android: true
   ios: true
   remove_alpha_ios: true
   adaptive_icon_background: "#FFFFFFFF"
-  adaptive_icon_foreground: assets/android12.png
+  adaptive_icon_foreground: src/android12.png
 
   flutter_lints: ^1.0.0
 
@@ -66,7 +67,6 @@ flutter_native_splash:
     # icon_background_color: "#111111"
     # icon_background_color_dark: "#eeeeee"
 
-
 flutter:
   uses-material-design: true
   assets:
@@ -77,5 +77,5 @@ flutter:
       fonts:
         - asset: assets/Qatar2022/Qatar2022Arabic-Bold.ttf
         - asset: assets/Qatar2022/Qatar2022Arabic-Heavy.ttf
-        
+
   #

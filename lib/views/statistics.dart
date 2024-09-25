@@ -1,5 +1,6 @@
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class GoalRankk extends StatelessWidget {
@@ -36,20 +37,12 @@ class GoalRankk extends StatelessWidget {
           children: sortDownToUpScored.map((e) {
             var indexOf = sortDownToUpScored.indexOf(e);
             var elementAt = sortDownToUpReceived.elementAt(indexOf);
-            var tLTxt2 = (indexOf == 0)
-                ? 'لأكثر تسجيلا'
-                : (indexOf == sortDownToUpScored.length - 1)
-                    ? 'الأقل تسجيلا'
-                    : 'سجل';
-            var tRTxt2 = (indexOf == 0)
-                ? 'الأقل استقبالا'
-                : (indexOf == sortDownToUpScored.length - 1)
-                    ? 'لأكثر استقبالا'
-                    : 'استقبل';
+            var tLTxt2 = _getMostScoringText(indexOf, sortDownToUpScored.length);
+            var tRTxt2 = _getMostReceivingText(indexOf, sortDownToUpScored.length);
             return Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: SizedBox(
-                height: 100,
+                height: 101.h,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
                   child: Row(
@@ -68,7 +61,7 @@ class GoalRankk extends StatelessWidget {
           title: const Text('إحصائيات سريعة'),
           children: [
             SizedBox(
-              height: 100,
+              height: 101.h,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
                 child: Row(
@@ -86,47 +79,41 @@ class GoalRankk extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: SizedBox(
-                height: 100,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
-                  child: Row(
-                    children: [
-                      if (leastScored != null) RoundedTeam(team: leastScored),
-                      if (leastScored != null && mostReceived != null)
-                        CenterContent(
-                          teamLeft: leastScored,
-                          teamLeftText: 'الأقل تسجيلا',
-                          teamRight: mostReceived,
-                          teamRightText: 'لأكثر استقبالا',
-                        ),
-                      if (mostReceived != null) RoundedTeam(team: mostReceived, left: false),
-                    ],
-                  ),
+            SizedBox(
+              height: 101.h,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+                child: Row(
+                  children: [
+                    if (leastScored != null) RoundedTeam(team: leastScored),
+                    if (leastScored != null && mostReceived != null)
+                      CenterContent(
+                        teamLeft: leastScored,
+                        teamLeftText: 'الأقل تسجيلا',
+                        teamRight: mostReceived,
+                        teamRightText: 'لأكثر استقبالا',
+                      ),
+                    if (mostReceived != null) RoundedTeam(team: mostReceived, left: false),
+                  ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: SizedBox(
-                height: 100,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
-                  child: Row(
-                    children: [
-                      if (leastDifference != null) RoundedTeam(team: leastDifference),
-                      if (leastDifference != null && mostDifference != null)
-                        CenterContent(
-                          teamLeft: leastDifference,
-                          teamLeftText: 'الأقل فارقا',
-                          teamRight: mostDifference,
-                          teamRightText: 'لأكثر فارقا',
-                        ),
-                      if (mostDifference != null) RoundedTeam(team: mostDifference, left: false),
-                    ],
-                  ),
+            SizedBox(
+              height: 101.h,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+                child: Row(
+                  children: [
+                    if (leastDifference != null) RoundedTeam(team: leastDifference),
+                    if (leastDifference != null && mostDifference != null)
+                      CenterContent(
+                        teamLeft: leastDifference,
+                        teamLeftText: 'الأقل فارقا',
+                        teamRight: mostDifference,
+                        teamRightText: 'لأكثر فارقا',
+                      ),
+                    if (mostDifference != null) RoundedTeam(team: mostDifference, left: false),
+                  ],
                 ),
               ),
             ),
@@ -172,6 +159,22 @@ class GoalRankk extends StatelessWidget {
       ],
     );
   }
+
+  String _getMostReceivingText(int indexOf, int len) {
+    return (indexOf == 0)
+        ? 'الأقل استقبالا'
+        : (indexOf == len - 1)
+            ? 'لأكثر استقبالا'
+            : 'استقبل';
+  }
+
+  String _getMostScoringText(int indexOf, int len) {
+    return (indexOf == 0)
+        ? 'لأكثر تسجيلا'
+        : (indexOf == len - 1)
+            ? 'الأقل تسجيلا'
+            : 'سجل';
+  }
 }
 
 class GoalStatistic extends StatelessWidget {
@@ -197,7 +200,7 @@ class GoalStatistic extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 50, thickness: 5),
+          Divider(height: 50.h, thickness: 5),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -236,7 +239,7 @@ class CenterContent extends StatelessWidget {
         decoration: BoxDecoration(
           color: primarycolor.shade50,
         ),
-        height: 100,
+        height: 100.h,
         alignment: Alignment.center,
         child: Padding(
           padding: const EdgeInsets.all(18.0),

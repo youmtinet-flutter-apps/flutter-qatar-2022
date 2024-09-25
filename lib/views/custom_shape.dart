@@ -267,7 +267,7 @@ child: VideoPlayer(videoPlayerController),
 fit: BoxFit.fitWidth,
 child: SizedBox(
 width: Get.width,
-height: Get.height,
+hei ght: Get.height,
 child: AnimatedOpacity(
 opacity: _visible ? 1.0 : 0.0,
 duration: const Duration(milliseconds: 1000),

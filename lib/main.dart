@@ -1,22 +1,38 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:fifa_worldcup/lib.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if ((Platform.isAndroid || Platform.isIOS) && kDebugMode) {
+    await WakelockPlus.enable();
+  }
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   runApp(
-    GetMaterialApp(
-      title: 'كأس العالم فيفا قطر 2022',
-      locale: const Locale('ar'),
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Qatar2022',
-        primarySwatch: primarycolor,
-      ),
-      home: const SplashPage(seek: true),
+    ScreenUtilInit(
+      designSize: const Size(360.0, 806.0),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, _) {
+        return GetMaterialApp(
+          title: 'كأس العالم فيفا قطر 2022',
+          locale: const Locale('ar'),
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            fontFamily: 'Qatar2022',
+            primarySwatch: primarycolor,
+          ),
+          home: const SplashPage(seek: true),
+        );
+      },
     ),
   );
 }
@@ -75,125 +91,146 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
   @override
   Widget build(BuildContext context) {
     // Console.log(widgets2.map((e) => '${e.stage} ${e.matches.length} || '));
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                'assets/pattern.png',
+    return SafeArea(
+      child: Scaffold(
+        /* appBar: AppBar(
+          title: Text(widget.title),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  'assets/pattern.png',
+                ),
+                fit: BoxFit.cover,
+                repeat: ImageRepeat.repeat,
               ),
-              fit: BoxFit.cover,
-              repeat: ImageRepeat.repeat,
             ),
           ),
-        ),
-        elevation: 0,
-      ),
-      body: FutureBuilder<MAtchesAndStandings>(
-        future: fifaWCStandingsAndMatches(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var dateTime = DateTime.now().toUtc();
+          elevation: 0,
+        ), */
+        body: FutureBuilder<MAtchesAndStandings>(
+          future: fifaWCStandingsAndMatches(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var dateTime = DateTime.now().toUtc();
 
-            return SingleChildScrollView(
-              // physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Stack(
-                    children: [
-                      ClipPath(
-                        clipper: Customshape(),
-                        child: Container(
-                          height: 200,
-                          width: MediaQuery.of(context).size.width,
-                          color: const Color(primarycolorPrimaryValue),
-                          child: Stack(
-                            children: const [BackgroundPattern()],
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: Get.width * .3,
-                          child: Image.asset('assets/logo.png'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: Get.width * .75,
-                        child: const Text(
-                          'قطر 2022',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ...modelData(snapshot.data!.matches).map(
-                    (e) => ExpansionTile(
-                      title: Text(
-                        stageName(e.stage),
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      children: (e.groupMatches.isEmpty
-                              ? e.matches.map((e) => e.toView())
-                              : e.groupMatches.map(
-                                  (e) {
-                                    var firstStandl = snapshot.data!.standings.firstWhereOrNull((element) => element.group == e.group);
-                                    return Padding(
-                                      padding: const EdgeInsets.only(left: 18.0, right: 10),
-                                      child: ExpansionTile(
-                                        title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
-                                        children: [
-                                          ...e.matches.map((e) => e.toView()).toList(),
-                                          if (firstStandl != null) firstStandl.toView(),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ))
-                          .toList(),
-                    ),
-                  ),
-                  GoalRankk(
-                      gls: goalsRanking(snapshot.data!.matches.where((element) {
-                    var matchTime = DateTime.parse(element.utcDate);
-                    var isStarted = matchTime.isBefore(dateTime);
-                    return isStarted;
-                  }).toList())),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
+              return SingleChildScrollView(
+                // physics: const BouncingScrollPhysics(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Stack(
                       children: [
-                        ClipPath(clipper: TheAinFIFA(), child: containerBack(.25)),
-                        ClipPath(clipper: TheFinFIFA(), child: containerBack(.2)),
-                        const Expanded(child: SizedBox()),
-                        ClipPath(clipper: TheIinFIFA(), child: containerBack(.1)),
-                        const Expanded(child: SizedBox()),
-                        ClipPath(clipper: TheFinFIFA(), child: containerBack(.2)),
+                        ClipPath(
+                          clipper: Customshape(),
+                          child: Container(
+                            height: 200.h,
+                            width: MediaQuery.of(context).size.width,
+                            color: const Color(primarycolorPrimaryValue),
+                            child: const Stack(
+                              children: [
+                                BackgroundPattern(),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            width: Get.width * .3,
+                            child: Image.asset('assets/logo.png'),
+                          ),
+                        ),
+                        Positioned(
+                          top: 36.h,
+                          right: 24.w,
+                          child: SizedBox(
+                            width: Get.width * .75,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.title,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'قطر 2022',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                  //   ClipPath(clipper: TheFIFAClipper(), child: containerBack(1)),
-                  // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
-                ],
-              ),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(
-                backgroundColor: primarycolor.shade100,
-              ),
-            );
-          }
-        },
+                    ...modelData(snapshot.data!.matches).map(
+                      (e) => ExpansionTile(
+                        title: Text(
+                          stageName(e.stage),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        children: (e.groupMatches.isEmpty
+                                ? e.matches.map((e) => e.toView())
+                                : e.groupMatches.map(
+                                    (e) {
+                                      var firstStandl = snapshot.data!.standings.firstWhereOrNull((element) => element.group == e.group);
+                                      return Padding(
+                                        padding: const EdgeInsets.only(left: 18.0, right: 10),
+                                        child: ExpansionTile(
+                                          title: Text(e.group.replaceAll('GROUP_', 'المجموعة ')),
+                                          children: [
+                                            ...e.matches.map((e) => e.toView()).toList(),
+                                            if (firstStandl != null) firstStandl.toView(),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ))
+                            .toList(),
+                      ),
+                    ),
+                    GoalRankk(
+                        gls: goalsRanking(snapshot.data!.matches.where((element) {
+                      var matchTime = DateTime.parse(element.utcDate);
+                      var isStarted = matchTime.isBefore(dateTime);
+                      return isStarted;
+                    }).toList())),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          ClipPath(clipper: TheAinFIFA(), child: containerBack(.25)),
+                          ClipPath(clipper: TheFinFIFA(), child: containerBack(.2)),
+                          const Expanded(child: SizedBox()),
+                          ClipPath(clipper: TheIinFIFA(), child: containerBack(.1)),
+                          const Expanded(child: SizedBox()),
+                          ClipPath(clipper: TheFinFIFA(), child: containerBack(.2)),
+                        ],
+                      ),
+                    ),
+                    //   ClipPath(clipper: TheFIFAClipper(), child: containerBack(1)),
+                    // ...widget.standings.standings.map((e) => TableStanding(standing: e)),
+                  ],
+                ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: primarycolor.shade100,
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -202,11 +239,11 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
 Widget containerBack(double widthPercent) {
   return Builder(builder: (context) {
     return Container(
-      height: 200,
+      height: 200.h,
       width: MediaQuery.of(context).size.width * widthPercent,
       color: const Color(primarycolorPrimaryValue),
-      child: Stack(
-        children: const [BackgroundPattern()],
+      child: const Stack(
+        children: [BackgroundPattern()],
       ),
     );
   });
@@ -290,9 +327,9 @@ class StageWithMatches {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             stage,
-            style: const TextStyle(
-              fontSize: 36,
-              color: Color(0xFFA9A9A9),
+            style: TextStyle(
+              fontSize: 36.sp,
+              color: const Color(0xFFA9A9A9),
               fontWeight: FontWeight.bold,
             ),
           ),

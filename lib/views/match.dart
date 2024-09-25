@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +32,7 @@ class _MatchViewState extends State<MatchView> {
     var localeTime = DateFormat.Hm(Get.locale!.languageCode).format(matchTime);
     var localeDate = DateFormat.MEd(Get.locale!.languageCode).format(matchTime);
     return SizedBox(
-      height: 100,
+      height: 100.h,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
         child: Row(
