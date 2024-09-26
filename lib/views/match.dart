@@ -41,7 +41,7 @@ class _MatchViewState extends State<MatchView> {
               flex: 1,
               child: Container(
                 decoration: const BoxDecoration(
-                  color: primarycolor,
+                  color: primaryColor,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(36),
                     bottomRight: Radius.circular(36),
@@ -75,7 +75,7 @@ class _MatchViewState extends State<MatchView> {
               flex: 3,
               child: Container(
                 decoration: BoxDecoration(
-                  color: primarycolor.shade50,
+                  color: primaryColor.shade50,
                 ),
                 alignment: Alignment.center,
                 child: Padding(
@@ -116,7 +116,7 @@ class _MatchViewState extends State<MatchView> {
               flex: 1,
               child: Container(
                 decoration: const BoxDecoration(
-                  color: primarycolor,
+                  color: primaryColor,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(36),
                     bottomLeft: Radius.circular(36),

@@ -22,7 +22,7 @@ class TableStanding extends StatelessWidget {
         children: [
           Container(
             decoration: const BoxDecoration(
-              color: primarycolor,
+              color: primaryColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -41,7 +41,7 @@ class TableStanding extends StatelessWidget {
           Container(
             width: Get.width,
             decoration: BoxDecoration(
-              color: primarycolor.shade700,
+              color: primaryColor.shade700,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -63,7 +63,7 @@ class TableStanding extends StatelessWidget {
             ),
           ),
           Container(
-            decoration: BoxDecoration(color: primarycolor.shade50),
+            decoration: BoxDecoration(color: primaryColor.shade50),
             width: Get.width,
             alignment: Alignment.center,
             child: Padding(
@@ -92,7 +92,7 @@ class TableStanding extends StatelessWidget {
                                           alignment: Alignment.bottomRight,
                                           child: Icon(
                                             Icons.verified,
-                                            color: primarycolor,
+                                            color: primaryColor,
                                             size: 15,
                                             shadows: [Shadow(blurRadius: 5, color: Colors.white)],
                                           ),

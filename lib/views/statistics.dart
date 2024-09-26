@@ -4,30 +4,57 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class GoalRankk extends StatelessWidget {
-  const GoalRankk({super.key, required this.gls});
+  const GoalRankk({
+    super.key,
+    required this.gls,
+    required this.goalRanking,
+  });
   final List<GoalRanking> gls;
-
+  final GlobalGoalRanking goalRanking;
   @override
   Widget build(BuildContext context) {
     // var matchTimeLocal = DateFormat.MMMMd(Get.locale).format(matchTime);
-    var sortDownToUpReceived = gls.map((e) => e).toList()..sort((a, b) => Comparable.compare(a.receivedFT, b.receivedFT));
-    var leastReceived = sortDownToUpReceived.firstWhereOrNull((element) => true);
-    //
-    var sortUpToDownReceived = gls.map((e) => e).toList()..sort((a, b) => Comparable.compare(b.receivedFT, a.receivedFT));
-    var mostReceived = sortUpToDownReceived.firstWhereOrNull((element) => true);
-    //
-    var sortUpToDownScored = gls.map((e) => e).toList()..sort((a, b) => Comparable.compare(a.scoredFT, b.scoredFT));
-    var leastScored = sortUpToDownScored.firstWhereOrNull((element) => true);
-    //
-    var sortDownToUpScored = gls.map((e) => e).toList()..sort((a, b) => Comparable.compare(b.scoredFT, a.scoredFT));
-    var mostScored = sortDownToUpScored.firstWhereOrNull((element) => true);
-    //  // // // // // //
-    var sortDownToUpScoreDifference = gls.map((e) => e).toList()..sort((a, b) => Comparable.compare(a.scoredFT - a.receivedFT, b.scoredFT - b.receivedFT));
-    var leastDifference = sortDownToUpScoreDifference.firstWhereOrNull((element) => true);
-    //
-    var sortUpToDownScoreDifference = gls.map((e) => e).toList()..sort((a, b) => Comparable.compare(b.scoredFT - b.receivedFT, a.scoredFT - a.receivedFT));
-    var mostDifference = sortUpToDownScoreDifference.firstWhereOrNull((element) => true);
-    //
+    List<GoalRanking> sortDownToUpReceived = gls.map((e) => e).toList()
+      ..sort((a, b) => Comparable.compare(
+            a.allReceived,
+            b.allReceived,
+          ));
+    GoalRanking? leastReceived = sortDownToUpReceived.firstWhereOrNull((element) => true);
+    List<GoalRanking> sortUpToDownReceived = gls.map((e) => e).toList()
+      ..sort((a, b) => Comparable.compare(
+            b.allReceived,
+            a.allReceived,
+          ));
+    GoalRanking? mostReceived = sortUpToDownReceived.firstWhereOrNull((element) => true);
+    List<GoalRanking> sortUpToDownScored = gls.map((e) => e).toList()
+      ..sort((a, b) => Comparable.compare(
+            a.allScored,
+            b.allScored,
+          ));
+    GoalRanking? leastScored = sortUpToDownScored.firstWhereOrNull((element) => true);
+    List<GoalRanking> sortDownToUpScored = gls.map((e) => e).toList()
+      ..sort((a, b) => Comparable.compare(
+            b.allScored,
+            a.allScored,
+          ));
+    GoalRanking? mostScored = sortDownToUpScored.firstWhereOrNull((element) => true);
+    List<GoalRanking> sortDownToUpScoreDifference = gls.map((e) => e).toList()
+      ..sort(
+        (a, b) => Comparable.compare(
+          a.allScored - a.allReceived,
+          b.allScored - b.allReceived,
+        ),
+      );
+    GoalRanking? leastDifference = sortDownToUpScoreDifference.firstWhereOrNull((element) => true);
+
+    List<GoalRanking> sortUpToDownScoreDifference = gls.map((e) => e).toList()
+      ..sort(
+        (a, b) => Comparable.compare(
+          b.allScored - b.allReceived,
+          a.allScored - a.allReceived,
+        ),
+      );
+    GoalRanking? mostDifference = sortUpToDownScoreDifference.firstWhereOrNull((element) => true);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -124,34 +151,21 @@ class GoalRankk extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GoalStatistic(
-                text: 'الوقت الأصلي',
-                intvalueScored: gls.fold(0, (previousValue, element) => previousValue + element.scoredRT),
-                intvalueReceived: gls.fold(0, (previousValue, element) => previousValue + element.receivedRT),
-              ),
+              child: GoalStatistic(text: 'الوقت الأصلي', intvalueScored: goalRanking.scoredRT),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GoalStatistic(
-                text: 'الوقت الاضافي',
-                intvalueScored: gls.fold(0, (previousValue, element) => previousValue + element.scoredET),
-                intvalueReceived: gls.fold(0, (previousValue, element) => previousValue + element.receivedET),
-              ),
+              child: GoalStatistic(text: 'الوقت الاضافي', intvalueScored: goalRanking.scoredET),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GoalStatistic(
-                text: 'ركلات الترجيح',
-                intvalueScored: gls.fold(0, (previousValue, element) => previousValue + element.scoredPT),
-                intvalueReceived: gls.fold(0, (previousValue, element) => previousValue + element.receivedPT),
-              ),
+              child: GoalStatistic(text: 'ركلات الترجيح', intvalueScored: goalRanking.scoredPT),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GoalStatistic(
                 text: 'المبارات',
-                intvalueScored: gls.fold(0, (previousValue, element) => previousValue + element.scoredFT),
-                intvalueReceived: gls.fold(0, (previousValue, element) => previousValue + element.receivedFT),
+                intvalueScored: goalRanking.scoredFT,
               ),
             ),
           ],
@@ -178,39 +192,36 @@ class GoalRankk extends StatelessWidget {
 }
 
 class GoalStatistic extends StatelessWidget {
-  const GoalStatistic({Key? key, required this.text, required this.intvalueScored, required this.intvalueReceived}) : super(key: key);
+  const GoalStatistic({
+    Key? key,
+    required this.text,
+    required this.intvalueScored,
+  }) : super(key: key);
 
   final String text;
   final int intvalueScored;
-  final int intvalueReceived;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('مجموع الأهداف المسجلة في $text', textAlign: TextAlign.right),
-                Text('$intvalueScored', textAlign: TextAlign.right),
-              ],
+            flex: 3,
+            child: Text.rich(
+              TextSpan(
+                text: 'مجموع الأهداف المسجلة في ',
+                children: [
+                  TextSpan(text: text, style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor)),
+                ],
+              ),
             ),
           ),
-          Divider(height: 50.h, thickness: 5),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('إجمالي الأهداف التي تم تلقيها في $text', textAlign: TextAlign.right),
-                Text('$intvalueReceived', textAlign: TextAlign.left),
-              ],
-            ),
-          ),
+          Expanded(flex: 1, child: Text('$intvalueScored', textAlign: TextAlign.center)),
         ],
       ),
     );
@@ -237,7 +248,7 @@ class CenterContent extends StatelessWidget {
       flex: 3,
       child: Container(
         decoration: BoxDecoration(
-          color: primarycolor.shade50,
+          color: primaryColor.shade50,
         ),
         height: 100.h,
         alignment: Alignment.center,
@@ -252,7 +263,7 @@ class CenterContent extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(teamLeftText, textAlign: TextAlign.right),
-                    Text('${teamLeft.scoredFT}', textAlign: TextAlign.right),
+                    Text('${teamLeft.allScored}', textAlign: TextAlign.right),
                   ],
                 ),
               ),
@@ -263,7 +274,7 @@ class CenterContent extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(teamRightText, textAlign: TextAlign.right),
-                    Text('${teamRight.receivedFT}', textAlign: TextAlign.left),
+                    Text('${teamRight.allReceived}', textAlign: TextAlign.left),
                   ],
                 ),
               ),
@@ -291,7 +302,7 @@ class RoundedTeam extends StatelessWidget {
       flex: 1,
       child: Container(
         decoration: BoxDecoration(
-          color: primarycolor,
+          color: primaryColor,
           borderRadius: BorderRadius.only(
             topRight: left ? const Radius.circular(36) : Radius.zero,
             bottomRight: left ? const Radius.circular(36) : Radius.zero,

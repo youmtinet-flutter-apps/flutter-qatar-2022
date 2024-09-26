@@ -75,7 +75,7 @@ class _SplashPageState extends State<SplashPage> {
               duration: const Duration(milliseconds: 1000),
               child: AspectRatio(aspectRatio: _controller.value.aspectRatio, child: VideoPlayer(_controller)),
             ) //
-          : Container(color: Colors.red, width: Get.width, height: Get.height),
+          : Container(color: primaryColor, width: Get.width, height: Get.height),
     );
     // child: CachedNetworkImage(imageUrl: 'https://node-auth-master.youmrabti.com/imagi-20240314-150055.jpg'),
     // child: _videoSplashContent(),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:fifa_worldcup/lib.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +16,9 @@ Future<void> main() async {
   if ((Platform.isAndroid || Platform.isIOS) && kDebugMode) {
     await WakelockPlus.enable();
   }
+
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
   runApp(
     ScreenUtilInit(
       designSize: const Size(360.0, 806.0),
@@ -28,7 +31,7 @@ Future<void> main() async {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             fontFamily: 'Qatar2022',
-            primarySwatch: primarycolor,
+            primarySwatch: primaryColor,
           ),
           home: const SplashPage(seek: true),
         );
@@ -115,7 +118,6 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
               var dateTime = DateTime.now().toUtc();
 
               return SingleChildScrollView(
-                // physics: const BouncingScrollPhysics(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -199,11 +201,16 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
                       ),
                     ),
                     GoalRankk(
-                        gls: goalsRanking(snapshot.data!.matches.where((element) {
-                      var matchTime = DateTime.parse(element.utcDate);
-                      var isStarted = matchTime.isBefore(dateTime);
-                      return isStarted;
-                    }).toList())),
+                      gls: goalsRanking(
+                        snapshot.data?.matches.where((element) {
+                              var matchTime = DateTime.parse(element.utcDate);
+                              var isStarted = matchTime.isBefore(dateTime);
+                              return isStarted;
+                            }).toList() ??
+                            [],
+                      ),
+                      goalRanking: goalsRanking2(snapshot.data?.matches ?? []),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Row(
@@ -225,7 +232,7 @@ class _QatarWorldCupState extends State<QatarWorldCup> {
             } else {
               return Center(
                 child: CircularProgressIndicator(
-                  backgroundColor: primarycolor.shade100,
+                  backgroundColor: primaryColor.shade100,
                 ),
               );
             }
@@ -341,50 +348,62 @@ class StageWithMatches {
 }
 
 List<GoalRanking> goalsRanking(List<Matche> matches) {
+  List<GoalRanking> teams = matches.fold(
+    <GoalRanking>[],
+    (List<GoalRanking> pmm, Matche cmm) {
+      List<int> mapIDs = pmm.map((e) => e.team.id).toList();
+      if (!mapIDs.contains(cmm.homeTeam.id)) {
+        return pmm..add(GoalRanking(team: cmm.homeTeam));
+      }
+      return pmm;
+    },
+  );
   var gls = matches.fold<List<GoalRanking>>(
-    matches.fold(
-      [],
-      (previousRankings, currentMatche) {
-        if (previousRankings.where((e) => e.team == currentMatche.homeTeam).isEmpty) {
-          previousRankings.add(GoalRanking(team: currentMatche.homeTeam));
-        }
-        return previousRankings;
-      },
-    ),
-    (previousMatches2, currentMatche2) {
-      var homeTeam = previousMatches2.firstWhereOrNull((e) => e.team == currentMatche2.homeTeam);
-      var awayTeam = previousMatches2.firstWhereOrNull((e) => e.team == currentMatche2.awayTeam);
-      if (awayTeam != null) {
-        awayTeam.increaseReceiveFullTime = currentMatche2.score.fullTime.home;
-        awayTeam.increaseScoredFullTime = currentMatche2.score.fullTime.away;
-        //
-        awayTeam.increaseReceiveExtraTime = currentMatche2.score.extraTime.home;
-        awayTeam.increaseScoredExtraTime = currentMatche2.score.extraTime.away;
-        //
-        awayTeam.increaseReceiveRegularTime = currentMatche2.score.regularTime.home;
-        awayTeam.increaseScoredRegularTime = currentMatche2.score.regularTime.away;
-        //
-        awayTeam.increaseReceivePenalties = currentMatche2.score.penalties.home;
-        awayTeam.increaseScoredPenalties = currentMatche2.score.penalties.away;
-      }
-      if (homeTeam != null) {
-        homeTeam.increaseReceiveFullTime = currentMatche2.score.fullTime.away;
-        homeTeam.increaseScoredFullTime = currentMatche2.score.fullTime.home;
-        //
-        homeTeam.increaseReceiveExtraTime = currentMatche2.score.extraTime.away;
-        homeTeam.increaseScoredExtraTime = currentMatche2.score.extraTime.home;
-        //
-        homeTeam.increaseReceiveRegularTime = currentMatche2.score.regularTime.away;
-        homeTeam.increaseScoredRegularTime = currentMatche2.score.regularTime.home;
-        //
-        homeTeam.increaseReceivePenalties = currentMatche2.score.penalties.away;
-        homeTeam.increaseScoredPenalties = currentMatche2.score.penalties.home;
-      }
-      return previousMatches2;
+    teams,
+    (pm, cm) {
+      GoalRanking? homeTeam = pm.firstWhereOrNull((e) => e.team.id == cm.homeTeam.id);
+      GoalRanking? awayTeam = pm.firstWhereOrNull((e) => e.team.id == cm.awayTeam.id);
+      awayTeam?.receivedHT += cm.score.halfTime.home;
+      awayTeam?.scoredHT += cm.score.halfTime.away;
+      awayTeam?.receivedET += cm.score.extraTime.home;
+      awayTeam?.scoredET += cm.score.extraTime.away;
+      awayTeam?.receivedRT += cm.score.regularTime.home;
+      awayTeam?.scoredRT += cm.score.regularTime.away;
+      awayTeam?.receivedPT += cm.score.penalties.home;
+      awayTeam?.scoredPT += cm.score.penalties.away;
+      homeTeam?.receivedHT += cm.score.halfTime.away;
+      homeTeam?.scoredHT += cm.score.halfTime.home;
+      homeTeam?.receivedET += cm.score.extraTime.away;
+      homeTeam?.scoredET += cm.score.extraTime.home;
+      homeTeam?.receivedRT += cm.score.regularTime.away;
+      homeTeam?.scoredRT += cm.score.regularTime.home;
+      homeTeam?.receivedPT += cm.score.penalties.away;
+      homeTeam?.scoredPT += cm.score.penalties.home;
+      return pm;
     },
   );
 
   return gls;
+}
+
+GlobalGoalRanking goalsRanking2(List<Matche> matches) {
+  int scoredFT = 0;
+  int scoredRT = 0;
+  int scoredET = 0;
+  int scoredPT = 0;
+  for (var match in matches) {
+    scoredRT += match.score.regularTime.home + match.score.regularTime.away;
+    scoredET += match.score.extraTime.home + match.score.extraTime.away;
+    scoredPT += match.score.penalties.home + match.score.penalties.away;
+    scoredFT += match.score.fullTime.home + match.score.fullTime.away;
+  }
+
+  return GlobalGoalRanking(
+    scoredFT: scoredFT,
+    scoredRT: scoredRT,
+    scoredET: scoredET,
+    scoredPT: scoredPT,
+  );
 }
 
 List<StageWithMatches> modelData(List<Matche> matches) {
@@ -419,10 +438,23 @@ List<StageWithMatches> modelData(List<Matche> matches) {
   return vari;
 }
 
+class GlobalGoalRanking {
+  int scoredFT;
+  int scoredRT;
+  int scoredET;
+  int scoredPT;
+  GlobalGoalRanking({
+    this.scoredFT = 0,
+    this.scoredRT = 0,
+    this.scoredET = 0,
+    this.scoredPT = 0,
+  });
+}
+
 class GoalRanking {
   Team team;
-  int scoredFT;
-  int receivedFT;
+  int scoredHT;
+  int receivedHT;
   int scoredRT;
   int receivedRT;
   int scoredET;
@@ -431,8 +463,8 @@ class GoalRanking {
   int receivedPT;
   GoalRanking({
     required this.team,
-    this.receivedFT = 0,
-    this.scoredFT = 0,
+    this.receivedHT = 0,
+    this.scoredHT = 0,
     this.scoredRT = 0,
     this.receivedRT = 0,
     this.scoredET = 0,
@@ -441,40 +473,6 @@ class GoalRanking {
     this.receivedPT = 0,
   });
 
-  set increaseReceivePenalties(int score) {
-    receivedPT += score;
-  }
-
-  set increaseScoredPenalties(int score) {
-    scoredPT += score;
-  }
-
-  set increaseReceiveExtraTime(int score) {
-    receivedET += score;
-  }
-
-  set increaseScoredExtraTime(int score) {
-    scoredET += score;
-  }
-
-  set increaseReceiveRegularTime(int score) {
-    receivedRT += score;
-  }
-
-  set increaseScoredRegularTime(int score) {
-    scoredRT += score;
-  }
-
-  set increaseReceiveFullTime(int score) {
-    receivedFT += score;
-  }
-
-  set increaseScoredFullTime(int score) {
-    scoredFT += score;
-  }
-
-  @override
-  String toString() {
-    return '${team.name} received: $receivedFT and scored $scoredFT';
-  }
+  int get allReceived => receivedRT + receivedET + receivedPT;
+  int get allScored => scoredRT + scoredET + scoredPT;
 }

@@ -26,11 +26,7 @@ class WorldcupMatches {
   }
 
   static WorldcupMatches fromJson(Map<String, Object?> json) {
-    return WorldcupMatches(
-        filters: json['filters'] == null ? Filters.fromJson({}) : Filters.fromJson(json['filters'] as Map<String, Object?>),
-        resultSet: json['resultSet'] == null ? ResultSet.fromJson({}) : ResultSet.fromJson(json['resultSet'] as Map<String, Object?>),
-        competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>),
-        matches: json['matches'] == null ? [] : (json['matches'] as List).map<Matche>((data) => Matche.fromJson(data as Map<String, Object?>)).toList());
+    return WorldcupMatches(filters: json['filters'] == null ? Filters.fromJson({}) : Filters.fromJson(json['filters'] as Map<String, Object?>), resultSet: json['resultSet'] == null ? ResultSet.fromJson({}) : ResultSet.fromJson(json['resultSet'] as Map<String, Object?>), competition: json['competition'] == null ? Competition.fromJson({}) : Competition.fromJson(json['competition'] as Map<String, Object?>), matches: json['matches'] == null ? [] : (json['matches'] as List).map<Matche>((data) => Matche.fromJson(data as Map<String, Object?>)).toList());
   }
 
   @override
@@ -83,42 +79,11 @@ class Matche {
     required this.referees,
   });
   Matche copyWith({Area? area, Competition? competition, Season? season, int? id, String? utcDate, String? status, int? matchday, String? stage, String? group, String? lastUpdated, Team? homeTeam, Team? awayTeam, Score? score, Odds? odds, List<Referees>? referees}) {
-    return Matche(
-        area: area ?? this.area,
-        competition: competition ?? this.competition,
-        season: season ?? this.season,
-        id: id ?? this.id,
-        utcDate: utcDate ?? this.utcDate,
-        status: status ?? this.status,
-        matchday: matchday ?? this.matchday,
-        stage: stage ?? this.stage,
-        group: group ?? this.group,
-        lastUpdated: lastUpdated ?? this.lastUpdated,
-        homeTeam: homeTeam ?? this.homeTeam,
-        awayTeam: awayTeam ?? this.awayTeam,
-        score: score ?? this.score,
-        odds: odds ?? this.odds,
-        referees: referees ?? this.referees);
+    return Matche(area: area ?? this.area, competition: competition ?? this.competition, season: season ?? this.season, id: id ?? this.id, utcDate: utcDate ?? this.utcDate, status: status ?? this.status, matchday: matchday ?? this.matchday, stage: stage ?? this.stage, group: group ?? this.group, lastUpdated: lastUpdated ?? this.lastUpdated, homeTeam: homeTeam ?? this.homeTeam, awayTeam: awayTeam ?? this.awayTeam, score: score ?? this.score, odds: odds ?? this.odds, referees: referees ?? this.referees);
   }
 
   Map<String, Object?> toJson() {
-    return {
-      'area': area.toJson(),
-      'competition': competition.toJson(),
-      'season': season.toJson(),
-      'id': id,
-      'utcDate': utcDate,
-      'status': status,
-      'matchday': matchday,
-      'stage': stage,
-      'group': group,
-      'lastUpdated': lastUpdated,
-      'homeTeam': homeTeam.toJson(),
-      'awayTeam': awayTeam.toJson(),
-      'score': score.toJson(),
-      'odds': odds.toJson(),
-      'referees': referees.map<Map<String, dynamic>>((data) => data.toJson()).toList()
-    };
+    return {'area': area.toJson(), 'competition': competition.toJson(), 'season': season.toJson(), 'id': id, 'utcDate': utcDate, 'status': status, 'matchday': matchday, 'stage': stage, 'group': group, 'lastUpdated': lastUpdated, 'homeTeam': homeTeam.toJson(), 'awayTeam': awayTeam.toJson(), 'score': score.toJson(), 'odds': odds.toJson(), 'referees': referees.map<Map<String, dynamic>>((data) => data.toJson()).toList()};
   }
 
   static Matche fromJson(Map<String, Object?> json) {
@@ -151,23 +116,7 @@ class Matche {
 
   @override
   bool operator ==(Object other) {
-    return other is Matche &&
-        other.runtimeType == runtimeType &&
-        other.area == area &&
-        other.competition == competition &&
-        other.season == season &&
-        other.id == id &&
-        other.utcDate == utcDate &&
-        other.status == status &&
-        other.matchday == matchday &&
-        other.stage == stage &&
-        other.group == group &&
-        other.lastUpdated == lastUpdated &&
-        other.homeTeam == homeTeam &&
-        other.awayTeam == awayTeam &&
-        other.score == score &&
-        other.odds == odds &&
-        other.referees == referees;
+    return other is Matche && other.runtimeType == runtimeType && other.area == area && other.competition == competition && other.season == season && other.id == id && other.utcDate == utcDate && other.status == status && other.matchday == matchday && other.stage == stage && other.group == group && other.lastUpdated == lastUpdated && other.homeTeam == homeTeam && other.awayTeam == awayTeam && other.score == score && other.odds == odds && other.referees == referees;
   }
 
   @override
@@ -308,7 +257,11 @@ class Score {
       duration: json['duration'] == null ? 'null' : json['duration'] as String,
       fullTime: json['fullTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['fullTime'] as Map<String, Object?>),
       halfTime: json['halfTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['halfTime'] as Map<String, Object?>),
-      regularTime: json['regularTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['regularTime'] as Map<String, Object?>),
+      regularTime: json['regularTime'] == null
+          ? FullTime.fromJson(
+              json['fullTime'] as Map<String, Object?>,
+            )
+          : FullTime.fromJson(json['regularTime'] as Map<String, Object?>),
       extraTime: json['extraTime'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['extraTime'] as Map<String, Object?>),
       penalties: json['penalties'] == null ? FullTime.fromJson({}) : FullTime.fromJson(json['penalties'] as Map<String, Object?>),
     );
@@ -343,10 +296,9 @@ class FullTime {
   }
 
   static FullTime fromJson(Map<String, Object?> json) {
-    return FullTime(
-      home: json['home'] == null ? 0 : json['home'] as int,
-      away: json['away'] == null ? 0 : json['away'] as int,
-    );
+    var jsH = json['home'];
+    var jsA = json['away'];
+    return FullTime(home: jsH == null ? 0 : jsH as int, away: jsA == null ? 0 : jsA as int);
   }
 
   @override
